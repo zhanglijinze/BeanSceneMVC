@@ -1,7 +1,16 @@
+using BeanSceneMVC.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+//Add EF databse context 
+builder.Services.AddDbContext<ApplicationDbContext>(options => { options.UseSqlServer(builder.Configuration.GetConnectionString("BeanSceneLocal"));});
+
+//Add Identity support
+
 
 var app = builder.Build();
 
