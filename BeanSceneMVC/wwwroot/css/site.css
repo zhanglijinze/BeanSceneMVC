@@ -1,11 +1,15 @@
 html {
-  font-size: 14px;
+    /*font-size: 14px;*/
+    font-size: 62.5%;
+    
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        /*  font-size: 16px;*/
+        font-size: 1.6rem;
+        
+    }
 }
 
 html {
@@ -13,8 +17,48 @@ html {
   min-height: 100%;
 }
 
+
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    
+}
+
+
+/*
+
+--typography
+
+Large headings: Tangerine
+Primary typeface: Open Sans (body) and Open Sans (headings)
+
+
+---Colours
+Bean Dark Blue:#083944
+Bean Mid Blue:#2F6672
+Bean Light Blue:#4AA1B5
+
+White:#FFFFFF
+
+Bean Gold:#EBC136
+Bean Pale Gold:#F8E8B5
+Bean Dark Gold:#CC9E09
+
+Bean Light Grey:#E0E0E0
+*/
+
+@font-face {
+    font-family: 'tangerine-bold';
+    src: url('../font/tangerine/tangerine-bold.ttf') format('truetype');
+}
+
+.large-heading {
+    font-family: tangerine-bold;
+    font-size: 7rem;
+    color: #EBC136;
+}
+
+.bean-dark-blue-text {
+    color: #083944;
 }
 
 .hero {
@@ -23,4 +67,9 @@ body {
     background-image: linear-gradient(rgba(34, 34, 34, 0.60),rgba(34, 34, 34, 0.60)), url(../Images/Background/Hero.jpg);
     background-size: cover;
     color: #fff;
+}
+
+.bean-light-blue {
+    background-color: #4AA1B5;
+    border-bottom: 2px solid #EBC136;
 }
