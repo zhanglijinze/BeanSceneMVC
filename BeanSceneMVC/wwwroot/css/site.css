@@ -69,7 +69,7 @@ Bean Light Grey:#E0E0E0
     src: url('../font/tangerine/tangerine-bold.ttf') format('truetype');
 }
 
-.large-heading {
+.large-heading,h1 {
     font-family: tangerine-bold;
     font-size: 7rem;
     color: #EBC136;
