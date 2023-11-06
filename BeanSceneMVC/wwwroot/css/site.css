@@ -20,8 +20,26 @@ html {
 
 body {
     margin-bottom: 60px;
-    
 }
+td, th { color:white;
+}
+body .btn-primary {
+    background-color: #4AA1B5;
+    border-color: #EBC136;
+  
+    font-weight: 500
+}
+body .btn-secondary {
+    border-color: #EBC136;
+    background-color: #2F6672;
+    font-weight: 500
+}
+body .btn-danger {
+    border-color: #EBC136;
+    background-color: #083944;
+    font-weight: 500
+}
+
 
 
 /*
@@ -71,5 +89,5 @@ Bean Light Grey:#E0E0E0
 
 .bean-light-blue {
     background-color: #4AA1B5;
-    border-bottom: 2px solid #EBC136;
+    border-bottom: 3px solid #EBC136;
 }
