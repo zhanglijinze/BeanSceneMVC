@@ -16,6 +16,7 @@ namespace BeanSceneMVC.Models
         public string Name { get; set; }
         [Required]
         [MaxLength(500)]
+        [DisplayFormat(HtmlEncode =false)]
         public string Description { get; set; }
         [Required]
         [RegularExpression(@"^\$?\d+(?:\.\d{1,2})?$", ErrorMessage = "Must be a number with up to 2 decimal places")]

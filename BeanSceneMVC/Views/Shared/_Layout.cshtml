@@ -31,7 +31,7 @@
                          <li class="nav-item dropdown">
                             <a class="nav-link text-dark dropdown-toggle" href="#" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                                 <i class="bi bi-tag-fill"></i>
-                                Genres
+                                Menu Category
                             </a>
                             <ul class="dropdown-menu">
                                 <li class="dropdown-item">
@@ -44,6 +44,23 @@
                                     <a class="nav-link text-dark" asp-area="" asp-controller="MenuCategories" asp-action="Create">Add category</a>
                                 </li>
                             </ul>                        
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link text-dark dropdown-toggle" href="#" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                <i class="bi bi-book-fill"></i>
+                                Menu items
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="dropdown-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="MenuItems" asp-action="Index">Manage menu items</a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li class="dropdown-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="MenuItems" asp-action="Create">Add menu items</a>
+                                </li>
+                            </ul>
                         </li>
 
                     </ul>

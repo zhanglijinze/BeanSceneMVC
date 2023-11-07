@@ -91,3 +91,18 @@ Bean Light Grey:#E0E0E0
     background-color: #4AA1B5;
     border-bottom: 3px solid #EBC136;
 }
+
+
+/**/
+
+
+
+.manage-menus-table td {
+vertical-align:middle;
+}
+
+.manage-menus-table .menu-image-thumbnail {
+    max-height: 50px;
+    width: auto;
+}
+
