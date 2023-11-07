@@ -18,7 +18,7 @@ namespace BeanSceneMVC.Models
         [MaxLength(500)]
         public string Description { get; set; }
         [Required]
-        [RegularExpression(@"^\$?\d+(\.(\d{2}))?$")]
+        [RegularExpression(@"^\$?\d+(?:\.\d{1,2})?$", ErrorMessage = "Must be a number with up to 2 decimal places")]
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Price { get; set; }
         [Required]

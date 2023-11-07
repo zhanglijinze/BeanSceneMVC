@@ -59,6 +59,23 @@ namespace BeanSceneMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,Price,Photo,IsGlutenFree,IsDiaryFree,IsVegetarian,IsVegan,IsAllergenFree,MenuCategoryId")] MenuItem menuItem)
         {
+            MenuCategory? menuCategory = await _context.MenuCategories.FindAsync(menuItem.MenuCategoryId);
+            if (menuCategory == null) 
+            {
+                return NotFound("Menu category not found");
+            }
+            menuItem.MenuCategory = menuCategory;
+
+            ModelState.Clear();
+            TryValidateModel(menuItem);
+
+            //check for uniqueness of the Name index
+
+            if (null != await _context.MenuItems.FirstOrDefaultAsync(Item => Item.Name.ToLower() == menuItem.Name.ToLower()))
+            {
+                ModelState.AddModelError("Name", "Name already exists");
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(menuItem);
