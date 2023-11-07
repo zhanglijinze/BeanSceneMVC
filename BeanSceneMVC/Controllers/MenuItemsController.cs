@@ -112,8 +112,19 @@ namespace BeanSceneMVC.Controllers
         {
             if (id != menuItem.Id)
             {
-                return NotFound();
+                return BadRequest("Id do not match");
             }
+
+            MenuCategory? menuCategory = await _context.MenuCategories.FindAsync(menuItem.MenuCategoryId);
+            if (menuCategory == null)
+            {
+                return NotFound($"Menu category not found with ID:{menuItem.MenuCategoryId}");
+            }
+            menuItem.MenuCategory = menuCategory;
+
+            ModelState.Clear();
+            TryValidateModel(menuItem);
+
 
             if (ModelState.IsValid)
             {
