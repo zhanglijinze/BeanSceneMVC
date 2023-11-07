@@ -2,6 +2,11 @@
 
 @{
     ViewData["Title"] = "Manage menu items";
+    //Get an reference to the WebHostEnvironment service
+    var webHost = Context.RequestServices.GetService(typeof(IWebHostEnvironment)) as IWebHostEnvironment;
+
+    //Get the path of the wwwroot/images directory
+    string imagePath = webHost?.ContentRootPath + "wwwroot/images/" ?? "";
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -65,10 +70,19 @@
                 @Html.DisplayFor(modelItem => item.Photo)
             </td>*@
             <td>
-                <img src="~/images/Menu/@item.Photo"
-                     alt="Cover image for @Html.DisplayFor(modelItem=>item.Name)"
+                    @if (File.Exists($"{imagePath}/Menu/{item.Photo}"))
+                    {
+                        <img src="~/images/Menu/@item.Photo"
+                      alt="@Html.DisplayFor(modelItem=>item.Name)"
+                      class="menu-image-thumbnail">
+                    }
+                    else
+                    {
+                        <img src="~/images/placeholder-portrait.png"
+                     alt="@Html.DisplayFor(modelItem=>item.Name)"
                      class="menu-image-thumbnail">
-            </td>
+                    }            
+                </td>
             <td>
                 @Html.DisplayFor(modelItem => item.IsGlutenFree)
             </td>
