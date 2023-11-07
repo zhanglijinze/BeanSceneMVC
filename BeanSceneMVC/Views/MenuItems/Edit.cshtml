@@ -1,6 +1,113 @@
 ﻿@model BeanSceneMVC.Models.MenuItem
 
 @{
+    ViewData["Title"] = "Edit menu item";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<hr />
+<div class="row">
+    <div class="">
+        <form asp-action="Edit" class="d-flex flex-column gap-2">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Description" class="control-label"></label>
+                        @*<input asp-for="Description" class="form-control" />*@
+                        @Html.HiddenFor(item=>item.Description)
+                        <div class="form-control quill-editor">
+                            @Html.DisplayFor(item=>item.Description)
+                        </div>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Price" class="control-label"></label>
+                        <input asp-for="Price" class="form-control" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Photo" class="control-label"></label>
+                        <input asp-for="Photo" class="form-control" />
+                        <span asp-validation-for="Photo" class="text-danger"></span>
+                    </div>
+                    <div class="form-group form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" asp-for="IsGlutenFree" /> @Html.DisplayNameFor(model => model.IsGlutenFree)
+                        </label>
+                    </div>
+                    <div class="form-group form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" asp-for="IsDiaryFree" /> @Html.DisplayNameFor(model => model.IsDiaryFree)
+                        </label>
+                    </div>
+                    <div class="form-group form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" asp-for="IsVegetarian" /> @Html.DisplayNameFor(model => model.IsVegetarian)
+                        </label>
+                    </div>
+                    <div class="form-group form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" asp-for="IsVegan" /> @Html.DisplayNameFor(model => model.IsVegan)
+                        </label>
+                    </div>
+                    <div class="form-group form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" asp-for="IsAllergenFree" /> @Html.DisplayNameFor(model => model.IsAllergenFree)
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="MenuCategoryId" class="control-label"></label>
+                        <select asp-for="MenuCategoryId" class="form-control" asp-items="ViewBag.MenuCategoryId"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Styles {
+    <link rel="stylesheet" href="~/lib/quill/quill.snow.css" />
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    @*Include Quill JS editor reference*@
+    @{
+        await Html.RenderPartialAsync("_QuillPartial");
+    }
+
+
+    <script>
+        //Initialise the Quill JS editor for the #Description hidden field
+
+        initialiseQuillEditor("Description", ".quill-editor")
+
+    </script>
+}
+
+
+
+
+
+@*@model BeanSceneMVC.Models.MenuItem
+
+@{
     ViewData["Title"] = "Edit";
 }
 
@@ -77,3 +184,4 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+*@
