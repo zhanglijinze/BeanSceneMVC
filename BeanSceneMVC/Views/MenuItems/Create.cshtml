@@ -1,7 +1,7 @@
 ﻿@model BeanSceneMVC.Models.MenuItem
 
 @{
-    ViewData["Title"] = "Create book";
+    ViewData["Title"] = "Create menu item";
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -21,7 +21,10 @@
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
                 @*<input asp-for="Description" class="form-control" />*@
-                @Html.TextAreaFor(MenuItem=>MenuItem.Description,new{@class="form-control"})
+                        @Html.HiddenFor(book=>book.Description)
+                        <div class="form-control quill-editor">
+                            @Html.DisplayFor(book=>book.Description)
+                        </div>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
                 </div>
@@ -69,13 +72,33 @@
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
-                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
             </div>
         </form>
     </div>
 </div>
 
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+@section Styles {
+    <link rel="stylesheet" href="~/lib/quill/quill.snow.css" />
 }
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    @*Include Quill JS editor reference*@
+    @{
+        await Html.RenderPartialAsync("_QuillPartial");
+    }
+
+
+        <script>
+            //Initialise the Quill JS editor for the #Description hidden field
+
+            initialiseQuillEditor("Description",".quill-editor")
+
+        </script>
+}
+
+

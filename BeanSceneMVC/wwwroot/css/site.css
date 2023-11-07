@@ -106,3 +106,12 @@ vertical-align:middle;
     width: auto;
 }
 
+
+/*quill*/
+.ql-toolbar.ql-snow {
+    background-color: #FFFFFF; /* Replace with your desired color */
+}
+
+.ql-container {
+    border-radius: 0 !important;
+}

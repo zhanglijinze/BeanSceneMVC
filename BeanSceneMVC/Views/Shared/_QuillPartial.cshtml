@@ -1,0 +1,31 @@
+﻿<script src="~/lib/quill/quill.min.js"></script>
+<script>
+    /** 
+     * Initialisation a Quill JS editor instance using the specified form field ID and selector for the Quill editor. 
+     */
+
+    function initialiseQuillEditor(formFieldId, quillSelector = ".quill-editor") {
+
+        //Enable validation for hidden fields
+        $.validator.setDefaults({
+            ignore: [] // Default is ":hidden"
+        })
+
+        // Initialise Quill JS editor
+        var quill = new Quill('.quill-editor', {
+            theme: 'snow',
+            modules: {
+                //list of Quill JS formats to customise the toolbar: https://quilljs.com/docs/formats/
+                //toolbar:[['bold','italic'],['link','image']]
+            }
+        });
+        //Hidden field
+        const formField = document.getElementById(formFieldId)
+
+        //Use Quill Deltas to automatically update the hidden field when the HTML content changes
+        quill.on("text-change", delta => {
+            formField.value = quill.root.innerHTML
+        })
+    }
+
+</script>
