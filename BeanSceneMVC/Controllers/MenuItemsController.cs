@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BeanSceneMVC.Data;
 using BeanSceneMVC.Models;
+using System.Diagnostics.Eventing.Reader;
 
 namespace BeanSceneMVC.Controllers
 {
@@ -46,10 +47,21 @@ namespace BeanSceneMVC.Controllers
         }
 
         // GET: MenuItems/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create(int? id)
         {
+            MenuItem? menuItem = null;
+
+            if (id != null)
+            {
+                menuItem = await _context.MenuItems.FindAsync(id);
+                if (menuItem == null)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+
             ViewData["MenuCategoryId"] = new SelectList(_context.MenuCategories, "Id", "Name");
-            return View();
+            return View(menuItem);
         }
 
         // POST: MenuItems/Create
