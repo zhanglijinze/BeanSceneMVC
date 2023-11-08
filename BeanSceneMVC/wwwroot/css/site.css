@@ -21,8 +21,14 @@ html {
 body {
     margin-bottom: 60px;
 }
-td, th { color:white;
+
+.table {
+    color:white
 }
+
+.dark-mode .table { color:black;
+}
+
 body .btn-primary {
     background-color: #4AA1B5;
     border-color: #EBC136;
@@ -86,6 +92,11 @@ Bean Light Grey:#E0E0E0
     background-size: cover;
     color: #fff;
 }
+/*.dark-mode .hero {
+background-image:none;
+color:#000;
+
+}*/
 
 .bean-light-blue {
     background-color: #4AA1B5;
