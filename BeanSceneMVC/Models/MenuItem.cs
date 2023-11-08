@@ -41,8 +41,8 @@ namespace BeanSceneMVC.Models
         [DisplayName("Allergen-Free")]
       public bool IsAllergenFree { get; set; }
         [Required]
+      public int MenuCategoryId { get; set; }
         [DisplayName("Menu Category")]
-      public int MenuCategoryId { get; set; }      
-      public MenuCategory MenuCategory { get; set; }
+        public MenuCategory MenuCategory { get; set; }
     }
 }
