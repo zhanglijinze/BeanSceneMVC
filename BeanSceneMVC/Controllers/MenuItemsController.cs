@@ -46,6 +46,26 @@ namespace BeanSceneMVC.Controllers
             return View(menuItem);
         }
 
+        // GET: MenuItems/Details/5
+        public async Task<IActionResult> DetailsCustomer(int? id)
+        {
+            if (id == null || _context.MenuItems == null)
+            {
+                return NotFound();
+            }
+
+            var menuItem = await _context.MenuItems
+                .Include(m => m.MenuCategory)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (menuItem == null)
+            {
+                return NotFound();
+            }
+
+            return View(menuItem);
+        }
+
+
         // GET: MenuItems/Create
         public async Task<IActionResult> Create(int? id)
         {

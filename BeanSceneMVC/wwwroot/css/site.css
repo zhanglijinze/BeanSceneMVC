@@ -127,7 +127,7 @@ article {
 }
 /*Set a fixed height on the image container (constraint book images to same area)*/
 .menu-card__image-container {
-    height: 230px;
+    height: 250px;
     /*max-height: 100%;*/
     text-align: center;
 }
@@ -140,6 +140,8 @@ article {
         height: auto;*/
        height:100%;
        width:100%;
+       object-fit:cover;
+       
     }
 
 .menu-card__title {
