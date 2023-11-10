@@ -63,6 +63,44 @@ namespace BeanSceneMVC.Data
                 new Table { Code = "B9", AreaId = 3 },
                 new Table { Code = "B10", AreaId = 3 }
                 );
+
+            builder.Entity<Timeslot>().HasData(
+               new Timeslot { Time = new DateTime(2000, 1, 1, 8, 0, 0) },//8:00 AM
+               new Timeslot { Time = new DateTime(2000, 1, 1, 8, 30, 0) },//8:30 AM
+               new Timeslot { Time = new DateTime(2000, 1, 1, 9, 0, 0) },
+               new Timeslot { Time = new DateTime(2000, 1, 1, 9, 30, 0) },
+               new Timeslot { Time = new DateTime(2000, 1, 1, 10, 0, 0) },
+               new Timeslot { Time = new DateTime(2000, 1, 1, 10, 30, 0) },
+               new Timeslot { Time = new DateTime(2000, 1, 1, 11, 0, 0) },
+               new Timeslot { Time = new DateTime(2000, 1, 1, 11, 30, 0) },
+               new Timeslot { Time = new DateTime(2000, 1, 1, 12, 0, 0) },
+               new Timeslot { Time = new DateTime(2000, 1, 1, 12, 30, 0) },
+               new Timeslot { Time = new DateTime(2000, 1, 1, 13, 0, 0) },
+               new Timeslot { Time = new DateTime(2000, 1, 1, 13, 30, 0) },
+               new Timeslot { Time = new DateTime(2000, 1, 1, 14, 0, 0) },
+               new Timeslot { Time = new DateTime(2000, 1, 1, 14, 30, 0) },
+               new Timeslot { Time = new DateTime(2000, 1, 1, 15, 0, 0) },
+               new Timeslot { Time = new DateTime(2000, 1, 1, 15, 30, 0) },
+               new Timeslot { Time = new DateTime(2000, 1, 1, 16, 0, 0) },
+               new Timeslot { Time = new DateTime(2000, 1, 1, 16, 30, 0) },
+               new Timeslot { Time = new DateTime(2000, 1, 1, 17, 0, 0) },
+               new Timeslot { Time = new DateTime(2000, 1, 1, 17, 30, 0) },
+               new Timeslot { Time = new DateTime(2000, 1, 1, 18, 0, 0) },
+               new Timeslot { Time = new DateTime(2000, 1, 1, 18, 30, 0) },
+               new Timeslot { Time = new DateTime(2000, 1, 1, 19, 0, 0) },
+               new Timeslot { Time = new DateTime(2000, 1, 1, 19, 30, 0) },
+               new Timeslot { Time = new DateTime(2000, 1, 1, 20, 0, 0) },
+               new Timeslot { Time = new DateTime(2000, 1, 1, 20, 30, 0) },
+               new Timeslot { Time = new DateTime(2000, 1, 1, 21, 0, 0) },
+               new Timeslot { Time = new DateTime(2000, 1, 1, 21, 30, 0) },
+               new Timeslot { Time = new DateTime(2000, 1, 1, 22, 0, 0) }
+               );
+            builder.Entity<SittingType>().HasData(
+               new SittingType { Id = 1, Name = "Breakfast" },
+               new SittingType { Id = 2, Name = "Lunch" },
+               new SittingType { Id = 3, Name = "Dinner" }
+           );
+
             base.OnModelCreating(builder);
         }
     }
