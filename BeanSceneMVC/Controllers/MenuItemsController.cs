@@ -204,5 +204,51 @@ namespace BeanSceneMVC.Controllers
         {
           return (_context.MenuItems?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+
+        // GET: MenuItems/ViewAll
+        public async Task<IActionResult> ViewAll(string?search, int? menuCategoryId)
+        {
+           
+
+
+            IQueryable<MenuItem> menuItems = _context.MenuItems;
+
+       
+            if (!string.IsNullOrEmpty(search))
+            {
+           
+                menuItems = menuItems.Where(m => m.Name.Contains(search));
+            }
+
+           
+
+            if (menuCategoryId != null)
+            {
+              
+                menuItems = menuItems.Where(m => m.MenuCategoryId == menuCategoryId);
+
+            }
+
+
+            ViewData["MenuCategoryList"] = new SelectList(_context.MenuCategories, "Id", "Name");
+
+           
+            return View(await menuItems.OrderBy(m => m.Name).Include(m => m.MenuCategory).ToListAsync());
+
+          
+            var menuItemsWithMenuCategory = menuItems = _context.MenuItems.Include(m => m.MenuCategory);
+
+          
+            if (!string.IsNullOrEmpty(search))
+            {
+                // Filter book results
+                menuItemsWithMenuCategory = menuItemsWithMenuCategory.Where(m => m.Name.Contains(search))
+                    //.Where(b => b.Title.ToLower().Contains(search.ToLower()))
+                    .Include(m => m.MenuCategory);
+            }
+
+            // Load view with books
+            return View(await menuItemsWithMenuCategory.ToListAsync());
+        }
     }
 }

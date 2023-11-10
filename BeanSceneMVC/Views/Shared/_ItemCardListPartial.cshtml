@@ -1,0 +1,20 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@model IEnumerable<BeanSceneMVC.Models.MenuItem>
+
+@if(Model.Any()){
+
+<div class="row justify-content-center gap-3">
+    @foreach (var menuItem in Model)
+    {
+        <partial name="_ItemCardPartial" model="menuItem"/>
+    }
+</div>
+}
+else{
+<p>No items to display</p>
+}

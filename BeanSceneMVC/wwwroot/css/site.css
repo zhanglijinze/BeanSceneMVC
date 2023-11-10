@@ -103,8 +103,68 @@ color:#000;
     border-bottom: 3px solid #EBC136;
 }
 
+/*BEM = block__element--modifier*/
+/* Specific styling for library cards (with images in header) */
+/*bem?*/
+.card--library {
+ 
+}
+article {
+    color: #083944
+}
 
-/**/
+    .card--library .card-header {
+        height: 120px;
+    }
+
+    .card--library .card-img-top {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+/* Book cards, e.g. Books/ViewAll */
+.menu-card {
+}
+/*Set a fixed height on the image container (constraint book images to same area)*/
+.menu-card__image-container {
+    height: 230px;
+    /*max-height: 100%;*/
+    text-align: center;
+}
+
+    /*Dont let the book image grow outside of the image container*/
+    .menu-card__image-container img {
+       /* max-height: 100%;
+        width: auto;
+        max-width: 100%;
+        height: auto;*/
+       height:100%;
+       width:100%;
+    }
+
+.menu-card__title {
+    font-size: 1.3em;
+    margin-top: 0.8em;
+}
+
+.menu-card__description {
+    height: 250px;
+    overflow-y: auto;
+}
+
+.menu-card__more-info {
+    margin-top: 0.5em;
+    padding-top: 0.5em;
+    border-top: 1px solid #ddd;
+    text-align: center;
+}
+h1 {
+text-align:center
+}
+
+
+
+/*manage menus*/
 
 
 
@@ -117,6 +177,59 @@ vertical-align:middle;
     width: auto;
 }
 
+/*.fill-box {
+height:100%;
+width:fit-content
+
+}*/
+
+/*book search*/
+
+.menu-search-form {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 0.5em;
+    margin: 1em 0;
+}
+
+    .menu-search-form .btn > i {
+        margin-right: 0.2em;
+    }
+
+
+/*Available/unavailable icons in tables*/
+/*.status-available::before,
+.status-unavailable::before{*/
+
+:is(.status-available, .status-unavailable)::before {
+    display: inline-block;
+    font-family: bootstrap-icons !important;
+    font-size: 1.3em;
+    line-height: 1;
+    vertical-align: -0.2em;
+}
+
+
+.status-available::before {
+    content: "\F26A";
+    color: #18bd2e;
+}
+
+.status-unavailable::before {
+    content: "\F622";
+    color: #ff0000;
+}
+
+
+
+.card-body {
+    background-color: #E0E0E0
+}
+
+
+
+
 
 /*quill*/
 .ql-toolbar.ql-snow {
@@ -125,4 +238,10 @@ vertical-align:middle;
 
 .ql-container {
     border-radius: 0 !important;
+}
+
+/*checkbox*/
+
+table input[type="checkbox" i]:disabled {
+    color: red;
 }

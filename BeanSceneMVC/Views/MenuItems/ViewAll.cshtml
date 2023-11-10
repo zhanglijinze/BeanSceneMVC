@@ -1,0 +1,31 @@
+﻿@model IEnumerable<BeanSceneMVC.Models.MenuItem>
+@using Microsoft.AspNetCore.Hosting
+
+@{
+    ViewData["Title"] = "View all menu items";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div>
+   
+    <form asp-action="ViewAll" asp-controller="MenuItems" method="get" class="menu-search-form">
+        @Html.Editor("Search",new {htmlAttributes=new{@class="form-control-sm pull-left", aria_Lable="Search for a menu item",placeholder="Search..."}})
+
+        @Html.DropDownList(
+        "menuCategoryId",
+        (SelectList)ViewBag.MenuCategoryList,
+        "<All menu category>",
+        new{aria_label="Select a category"})
+
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-search-heart"></i>
+            Search
+        </button>
+        <a asp-action="ViewAll" class="btn btn-secondary">
+            <i class="bi bi-x-octagon"></i> Reset
+        </a>
+    </form>
+</div>
+
+<partial name="_ItemCardListPartial" model="Model" />

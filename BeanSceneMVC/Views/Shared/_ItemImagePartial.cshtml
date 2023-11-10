@@ -1,0 +1,27 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@model BeanSceneMVC.Models.MenuItem
+
+@{
+    //Get an reference to the WebHostEnvironment service
+    var webHost = Context.RequestServices.GetService(typeof(IWebHostEnvironment)) as IWebHostEnvironment;
+
+    //Get the path of the wwwroot/images directory
+    string imagePath = webHost?.ContentRootPath + "wwwroot/Images/" ?? "";
+}
+@if (File.Exists($"{imagePath}/Menu/{Model.Photo}"))
+{
+    <img src="~/Images/Menu/@Model.Photo"
+     alt="Cover image for @Html.DisplayFor(modelItem=>Model.Name)"
+     class="menu-image-thumbnail">
+}
+else
+{
+    <img src="~/images/placeholder-portrait.png"
+     alt="Placeholder image"
+     class="menu-image-thumbnail">
+}

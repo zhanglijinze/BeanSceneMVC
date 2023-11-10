@@ -84,19 +84,50 @@
                     }            
                 </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IsGlutenFree)
+                    @Html.DisplayFor(modelItem => item.IsGlutenFree) @if (item.IsGlutenFree)
+                    { <span>Yes</span>
+                    }
+                    else
+                    {
+                        <span>No</span>
+                    }
+                </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.IsDiaryFree)@if (item.IsDiaryFree)
+                    { <span>Yes</span>
+                    }
+                    else
+                    {
+                        <span>No</span>
+                    }
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IsDiaryFree)
+                    @Html.DisplayFor(modelItem => item.IsVegetarian)@if (item.IsVegetarian)
+                    { <span>Yes</span>
+                    }
+                    else
+                    {
+                        <span>No</span>
+                    }
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IsVegetarian)
+                    @Html.DisplayFor(modelItem => item.IsVegan)@if (item.IsVegan)
+                    {
+                        <span>Yes</span>
+                    }
+                    else
+                    {
+                        <span>No</span>
+                    }
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IsVegan)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsAllergenFree)
+                    @Html.DisplayFor(modelItem => item.IsAllergenFree)@if (item.IsAllergenFree)
+                    { <span>Yes</span>
+                    }
+                    else
+                    {
+                        <span>No</span>
+                    }
             </td>
             
             <td class="text-nowrap">
