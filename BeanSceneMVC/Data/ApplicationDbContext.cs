@@ -12,6 +12,7 @@ namespace BeanSceneMVC.Data
         public DbSet<Table> Tables { get; set; }
         public DbSet<Timeslot> Timeslots { get; set; }
         public DbSet<SittingType> SittingTypes { get; set; }
+        public DbSet<Sitting> Sittings { get; set; }
 
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
