@@ -1,17 +1,20 @@
 ﻿@model IEnumerable<BeanSceneMVC.Models.Table>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Manage tables";
 }
 
-<h1>Index</h1>
+<h1>@ViewData["Title"]</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">+ Add table</a>
 </p>
 <table class="table">
     <thead>
         <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Code)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Area)
             </th>
@@ -21,13 +24,26 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Code)
+                </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Area.Name)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Code">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Code">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Code">Delete</a>
+                     <a asp-action="Edit" asp-route-id="@item.Code"
+                   class="btn btn-sm btn-secondary " title="Edit">
+                                <i class="bi bi-pencil-fill" aria-label="Edit"></i>
+                                    </a> |
+                    <a asp-action="Details" asp-route-id="@item.Code"
+                   class="btn btn-sm btn-secondary " title="Details">
+                        <i class="bi bi-book-fill" aria-label="Details"></i>
+                    </a> |
+                     <a asp-action="Delete" asp-route-id="@item.Code"
+                   class="btn btn-sm btn-danger" title="Delete">
+                                <i class="bi bi-trash-fill" aria-label="Delete"></i>
+
+                            </a>
             </td>
         </tr>
 }

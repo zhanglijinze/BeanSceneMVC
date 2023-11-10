@@ -10,7 +10,7 @@ namespace BeanSceneMVC.Models
         [RegularExpression(@"^[A-Z]{1,2}\d{1,3}$", ErrorMessage = "Must follow the pattern XX000, e.g. M1, AB001")]
         public string Code { get; set; }
         [Required]
-        [DisplayName("Area ID")]
+        [DisplayName("Area")]
         public int AreaId { get; set; }
         public Area? Area { get; set; }
 

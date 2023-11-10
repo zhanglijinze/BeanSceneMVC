@@ -22,7 +22,7 @@ namespace BeanSceneMVC.Controllers
         // GET: Tables
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Tables.Include(t => t.Area);
+            var applicationDbContext = _context.Tables.Include(t => t.Area).OrderBy(r=>r.Code);
             return View(await applicationDbContext.ToListAsync());
         }
 
