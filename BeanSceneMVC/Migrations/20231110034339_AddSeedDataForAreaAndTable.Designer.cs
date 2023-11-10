@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeanSceneMVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231108215800_addAreaModel")]
-    partial class addAreaModel
+    [Migration("20231110034339_AddSeedDataForAreaAndTable")]
+    partial class AddSeedDataForAreaAndTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,8 +35,8 @@ namespace BeanSceneMVC.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(5)
-                        .HasColumnType("nvarchar(5)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -44,6 +44,23 @@ namespace BeanSceneMVC.Migrations
                         .IsUnique();
 
                     b.ToTable("Areas");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Main"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Outside"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Balcony"
+                        });
                 });
 
             modelBuilder.Entity("BeanSceneMVC.Models.MenuCategory", b =>
@@ -115,6 +132,174 @@ namespace BeanSceneMVC.Migrations
                         .IsUnique();
 
                     b.ToTable("MenuItems");
+                });
+
+            modelBuilder.Entity("BeanSceneMVC.Models.Table", b =>
+                {
+                    b.Property<string>("Code")
+                        .HasMaxLength(5)
+                        .HasColumnType("nvarchar(5)");
+
+                    b.Property<int>("AreaId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Code");
+
+                    b.HasIndex("AreaId");
+
+                    b.ToTable("Tables");
+
+                    b.HasData(
+                        new
+                        {
+                            Code = "M1",
+                            AreaId = 1
+                        },
+                        new
+                        {
+                            Code = "M2",
+                            AreaId = 1
+                        },
+                        new
+                        {
+                            Code = "M3",
+                            AreaId = 1
+                        },
+                        new
+                        {
+                            Code = "M4",
+                            AreaId = 1
+                        },
+                        new
+                        {
+                            Code = "M5",
+                            AreaId = 1
+                        },
+                        new
+                        {
+                            Code = "M6",
+                            AreaId = 1
+                        },
+                        new
+                        {
+                            Code = "M7",
+                            AreaId = 1
+                        },
+                        new
+                        {
+                            Code = "M8",
+                            AreaId = 1
+                        },
+                        new
+                        {
+                            Code = "M9",
+                            AreaId = 1
+                        },
+                        new
+                        {
+                            Code = "M10",
+                            AreaId = 1
+                        },
+                        new
+                        {
+                            Code = "O1",
+                            AreaId = 2
+                        },
+                        new
+                        {
+                            Code = "O2",
+                            AreaId = 2
+                        },
+                        new
+                        {
+                            Code = "O3",
+                            AreaId = 2
+                        },
+                        new
+                        {
+                            Code = "O4",
+                            AreaId = 2
+                        },
+                        new
+                        {
+                            Code = "O5",
+                            AreaId = 2
+                        },
+                        new
+                        {
+                            Code = "O6",
+                            AreaId = 2
+                        },
+                        new
+                        {
+                            Code = "O7",
+                            AreaId = 2
+                        },
+                        new
+                        {
+                            Code = "O8",
+                            AreaId = 2
+                        },
+                        new
+                        {
+                            Code = "O9",
+                            AreaId = 2
+                        },
+                        new
+                        {
+                            Code = "O10",
+                            AreaId = 2
+                        },
+                        new
+                        {
+                            Code = "B1",
+                            AreaId = 3
+                        },
+                        new
+                        {
+                            Code = "B2",
+                            AreaId = 3
+                        },
+                        new
+                        {
+                            Code = "B3",
+                            AreaId = 3
+                        },
+                        new
+                        {
+                            Code = "B4",
+                            AreaId = 3
+                        },
+                        new
+                        {
+                            Code = "B5",
+                            AreaId = 3
+                        },
+                        new
+                        {
+                            Code = "B6",
+                            AreaId = 3
+                        },
+                        new
+                        {
+                            Code = "B7",
+                            AreaId = 3
+                        },
+                        new
+                        {
+                            Code = "B8",
+                            AreaId = 3
+                        },
+                        new
+                        {
+                            Code = "B9",
+                            AreaId = 3
+                        },
+                        new
+                        {
+                            Code = "B10",
+                            AreaId = 3
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -324,6 +509,17 @@ namespace BeanSceneMVC.Migrations
                         .IsRequired();
 
                     b.Navigation("MenuCategory");
+                });
+
+            modelBuilder.Entity("BeanSceneMVC.Models.Table", b =>
+                {
+                    b.HasOne("BeanSceneMVC.Models.Area", "Area")
+                        .WithMany()
+                        .HasForeignKey("AreaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Area");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

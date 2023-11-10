@@ -9,7 +9,7 @@ namespace BeanSceneMVC.Models
         [Key]
         public int Id { get; set; }
         [Required]
-        [StringLength(5,MinimumLength =2)]
+        [StringLength(50,MinimumLength =2, ErrorMessage = "Must be between 2-50 characters")]
         public string Name { get; set; }
 
         public Area() { Name = ""; }

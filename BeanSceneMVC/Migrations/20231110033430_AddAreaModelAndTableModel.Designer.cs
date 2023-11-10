@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeanSceneMVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231110015710_AddTableModel")]
-    partial class AddTableModel
+    [Migration("20231110033430_AddAreaModelAndTableModel")]
+    partial class AddAreaModelAndTableModel
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,8 +35,8 @@ namespace BeanSceneMVC.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(5)
-                        .HasColumnType("nvarchar(5)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
