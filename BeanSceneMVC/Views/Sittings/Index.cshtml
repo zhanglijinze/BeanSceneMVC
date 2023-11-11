@@ -1,0 +1,84 @@
+﻿@model IEnumerable<BeanSceneMVC.Models.Sitting>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+           
+            <th>
+                @Html.DisplayNameFor(model => model.SittingType)
+            </th>
+            <th>
+                Sitting Time
+               @* @Html.DisplayNameFor(model => model.StartTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EndTime)*@
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Capacity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+           <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+           
+            <td>
+                @Html.DisplayFor(modelItem => item.SittingType.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartTime.Time)-
+           @* </td>
+            <td>*@
+                @Html.DisplayFor(modelItem => item.EndTime.Time)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Capacity)
+                </td>
+                @*<td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>*@
+                 <td class="status-@item.Status.ToString().ToLower()">
+                    @Html.DisplayFor(modelItem => item.Status)
+            <td>
+                <a asp-action="Edit" asp-route-sittingTypeId="@item.SittingTypeId" asp-route-dateString="@item.Date.ToString("yyyy-MM-dd")"
+                   class="btn btn-sm btn-secondary " title="Edit">
+                        <i class="bi bi-pencil-fill" aria-label="Edit"></i>
+                    </a>
+                    <a asp-action="Details" asp-route-sittingTypeId="@item.SittingTypeId" asp-route-dateString="@item.Date.ToString("yyyy-MM-dd")"
+                   class="btn btn-sm btn-primary " title="Details">
+                        <i class="bi bi-book-fill" aria-hidden="true"></i>
+                    </a>
+                    <a asp-action="Delete" asp-route-sittingTypeId="@item.SittingTypeId" asp-route-dateString="@item.Date.ToString("yyyy-MM-dd")"
+                   class="btn btn-sm btn-danger" title="Delete">
+                            <i class="bi bi-trash-fill" aria-label="Delete"></i>
+                    </a>
+
+
+                @*@Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })*@
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
