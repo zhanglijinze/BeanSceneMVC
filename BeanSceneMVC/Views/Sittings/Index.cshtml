@@ -1,17 +1,20 @@
 ﻿@model IEnumerable<BeanSceneMVC.Models.Sitting>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Create sitting";
 }
 
-<h1>Index</h1>
+<h1>@ViewData["Title"]</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">+ Add Sitting</a>
 </p>
 <table class="table">
     <thead>
         <tr>
+            <th>
+                WeekDay
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Date)
             </th>
@@ -38,6 +41,9 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
+             <td>
+                    @item.Date.ToString("dddd")
+                </td>
            <td>
                 @Html.DisplayFor(modelItem => item.Date)
             </td>

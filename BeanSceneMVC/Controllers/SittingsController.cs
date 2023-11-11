@@ -27,7 +27,7 @@ namespace BeanSceneMVC.Controllers
         }
 
         // GET: Sittings/Details/5/yyyy-mm-dd
-        [HttpGet("Sittings/Details/{SittingTypeId}/{dateString}")]
+        [HttpGet("Sittings/Details/{sittingTypeId}/{dateString}")]
         public async Task<IActionResult> Details(int sittingTypeId, string dateString)
         {
             /*  if (id == null || _context.Sittings == null)
@@ -158,22 +158,40 @@ namespace BeanSceneMVC.Controllers
             return View(sitting);
         }
 
-        // GET: Sittings/Delete/5
-        public async Task<IActionResult> Delete(DateTime? id)
+        // GET: Sittings/Delete/1/yyyy-mm-dd
+        [HttpGet("Sitting/Delete/{sittingTypeId}/{dateString}")]
+        public async Task<IActionResult> Delete(int sittingTypeId, string dateString)
         {
-            if (id == null || _context.Sittings == null)
-            {
-                return NotFound();
-            }
+            /*  if (id == null || _context.Sittings == null)
+              {
+                  return NotFound();
+              }
+
+              var sitting = await _context.Sittings
+                  .Include(s => s.EndTime)
+                  .Include(s => s.SittingType)
+                  .Include(s => s.StartTime)
+                  .FirstOrDefaultAsync(m => m.Date == id);
+              if (sitting == null)
+              {
+                  return NotFound();
+              }*/
+            //Convert date string to DateTime
+            DateTime sittingDate;
+            if (!DateTime.TryParse(dateString, out sittingDate)) return BadRequest("Invalid sitting date, must be'yyyy-mm-dd'. ");
+
+            //Check SectionType exists
+            SittingType? sittingType = await _context.SittingTypes.FindAsync(sittingTypeId);
+            if (sittingType == null) return NotFound("Sitting Type not found");
 
             var sitting = await _context.Sittings
                 .Include(s => s.EndTime)
                 .Include(s => s.SittingType)
                 .Include(s => s.StartTime)
-                .FirstOrDefaultAsync(m => m.Date == id);
+                .FirstOrDefaultAsync(m => m.SittingTypeId == sittingTypeId && m.Date == sittingDate);
             if (sitting == null)
             {
-                return NotFound();
+                return NotFound("Sitting not found");
             }
 
             return View(sitting);
