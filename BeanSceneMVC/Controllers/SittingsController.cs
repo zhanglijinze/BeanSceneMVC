@@ -10,6 +10,8 @@ using BeanSceneMVC.Models;
 using BeanSceneMVC.ViewModels;
 
 
+
+
 namespace BeanSceneMVC.Controllers
 {
     public class SittingsController : Controller
@@ -60,11 +62,11 @@ namespace BeanSceneMVC.Controllers
         // GET: Sittings/Create
         public IActionResult Create()
         {
-            ViewData["EndTimeId"] = new SelectList(_context.Timeslots, "Time", "Time");
+          /*  ViewData["EndTimeId"] = new SelectList(_context.Timeslots, "Time", "Time");
             ViewData["SittingTypeId"] = new SelectList(_context.SittingTypes, "Id", "Name");
             ViewData["StartTimeId"] = new SelectList(_context.Timeslots, "Time", "Time");
-         /*   return View();*/
-           return View( GenerateDefaultViewModel());
+            return View();*/
+            return View( GenerateDefaultViewModel());
         }
 
         // POST: Sittings/Create
@@ -74,20 +76,61 @@ namespace BeanSceneMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Date,SittingTypeId,StartTimeId,EndTimeId,Status,Capacity")] Sitting sitting)
         {
+            
+            /*ViewData["EndTimeId"] = new SelectList(_context.Timeslots, "Time", "Time", sitting.EndTimeId);
+            ViewData["SittingTypeId"] = new SelectList(_context.SittingTypes, "Id", "Name", sitting.SittingTypeId);
+            ViewData["StartTimeId"] = new SelectList(_context.Timeslots, "Time", "Time", sitting.StartTimeId);*/
+
+            //Find related entities based on their foreign key values (IDs)
+            SittingType? sittingType = await _context.SittingTypes.FindAsync(sitting.SittingTypeId);
+
+            Timeslot? startTime = await _context.Timeslots.FindAsync(sitting.StartTimeId);
+
+            Timeslot? endTime = await _context.Timeslots.FindAsync(sitting.EndTimeId);
+
+            //Check if related entities don't exist - throw 404 or a nice error message...
+
+            if (sittingType == null) return NotFound("Sitting type not found");
+            if (startTime == null) return NotFound("Start timeslot not found");
+            if (endTime == null) return NotFound("End timeslot not found");
+
+            //Assign related entities to the model
+            sitting.SittingType = sittingType;
+            sitting.StartTime = startTime;
+            sitting.EndTime = endTime;
+
+            //Manually revalidate the model
+            ModelState.Clear();
+            TryValidateModel(sitting);
+
+            //check for conflicting sitting (primary key already exists)
+
+            if (SittingExists(sitting.Date, sitting.SittingTypeId))
+            {
+                ModelState.AddModelError("Sitting.Date", "Sitting already exists (same date and sitting type) ");
+            }
+            // check if model is valid
+
             if (ModelState.IsValid)
             {
                 _context.Add(sitting);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EndTimeId"] = new SelectList(_context.Timeslots, "Time", "Time", sitting.EndTimeId);
-            ViewData["SittingTypeId"] = new SelectList(_context.SittingTypes, "Id", "Name", sitting.SittingTypeId);
-            ViewData["StartTimeId"] = new SelectList(_context.Timeslots, "Time", "Time", sitting.StartTimeId);
-            return View(sitting);
+            
+
+
+            //Build the view model
+            SittingViewModel viewModel = GenerateDefaultViewModel();
+
+            //Put sitting data into the view model
+            viewModel.Sitting = sitting;
+            //Load the view with our View Model
+            return View(viewModel);
         }
 
         // GET: Sittings/Edit/5/yyyy-mm-dd
-        [HttpGet("Sitting/Edit/{sittingTypeId}/{dateString}")]
+        [HttpGet("Sittings/Edit/{sittingTypeId}/{dateString}")]
         public async Task<IActionResult> Edit(int sittingTypeId, string dateString)
         {
             /* if (id == null || _context.Sittings == null)
@@ -116,24 +159,69 @@ namespace BeanSceneMVC.Controllers
                 return NotFound("Sitting not found");
             }
 
+       
+            //Build the view model
+            SittingViewModel viewModel = GenerateDefaultViewModel();
 
-            ViewData["EndTimeId"] = new SelectList(_context.Timeslots, "Time", "Time", sitting.EndTimeId);
-            ViewData["SittingTypeId"] = new SelectList(_context.SittingTypes, "Id", "Name", sitting.SittingTypeId);
-            ViewData["StartTimeId"] = new SelectList(_context.Timeslots, "Time", "Time", sitting.StartTimeId);
-            return View(sitting);
+            //Put sitting data into the view model
+            viewModel.Sitting = sitting;
+            //Load the view with our View Model
+            return View(viewModel);
         }
 
-        // POST: Sittings/Edit/5
+        // POST: Sittings/Edit/5/yyyy-mm-dd
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost("Sittings/Edit/{sittingTypeId}/{dateString}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(DateTime id, [Bind("Date,SittingTypeId,StartTimeId,EndTimeId,Status,Capacity")] Sitting sitting)
+        public async Task<IActionResult> Edit(int sittingTypeId,string dateString, [Bind("Date,SittingTypeId,StartTimeId,EndTimeId,Status,Capacity")] Sitting sitting)
         {
-            if (id != sitting.Date)
+            /* if (id != sitting.Date)
+             {
+                 return NotFound();
+             }*/
+
+            //Convert date string to DateTime
+            DateTime sittingDate;
+            if (!DateTime.TryParse(dateString, out sittingDate)) return BadRequest("Invalid sitting date, must be'yyyy-mm-dd'. ");
+
+            //Check SectionType exists
+            SittingType? sittingType = await _context.SittingTypes.FindAsync(sittingTypeId);
+            if (sittingType == null) return NotFound("Sitting Type not found");
+
+            //check Sitting exists
+            //find.. method can only be used with collection like Sittings here but not with other entities involved (associated) and only work on key fields.
+
+            if (!SittingExists(sittingDate, sittingTypeId))
             {
-                return NotFound();
+                return NotFound("Sitting not found");
             }
+
+            //Find related entities based on their foreign key values (IDs)
+            //SittingType? sittingType = await _context.SittingTypes.FindAsync(sitting.SittingTypeId);
+
+            Timeslot? startTime = await _context.Timeslots.FindAsync(sitting.StartTimeId);
+
+            Timeslot? endTime = await _context.Timeslots.FindAsync(sitting.EndTimeId);
+
+            //Check if related entities don't exist - throw 404 or a nice error message...
+
+            if (sittingType == null) return NotFound("Sitting type not found");
+            if (startTime == null) return NotFound("Start timeslot not found");
+            if (endTime == null) return NotFound("End timeslot not found");
+
+            //Assign related entities to the model
+            sitting.SittingType = sittingType;
+            sitting.StartTime = startTime;
+            sitting.EndTime = endTime;
+
+            //Manually revalidate the model
+            ModelState.Clear();
+            TryValidateModel(sitting);
+
+
+
+
 
             if (ModelState.IsValid)
             {
@@ -144,7 +232,7 @@ namespace BeanSceneMVC.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SittingExists(sitting.Date))
+                    if (!SittingExists(sitting.Date,sitting.SittingTypeId))
                     {
                         return NotFound();
                     }
@@ -155,14 +243,16 @@ namespace BeanSceneMVC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EndTimeId"] = new SelectList(_context.Timeslots, "Time", "Time", sitting.EndTimeId);
-            ViewData["SittingTypeId"] = new SelectList(_context.SittingTypes, "Id", "Name", sitting.SittingTypeId);
-            ViewData["StartTimeId"] = new SelectList(_context.Timeslots, "Time", "Time", sitting.StartTimeId);
-            return View(sitting);
+            /* ViewData["EndTimeId"] = new SelectList(_context.Timeslots, "Time", "Time", sitting.EndTimeId);
+             ViewData["SittingTypeId"] = new SelectList(_context.SittingTypes, "Id", "Name", sitting.SittingTypeId);
+             ViewData["StartTimeId"] = new SelectList(_context.Timeslots, "Time", "Time", sitting.StartTimeId);*/
+            SittingViewModel viewModel = GenerateDefaultViewModel();
+            viewModel.Sitting = sitting;
+            return View(viewModel);
         }
 
         // GET: Sittings/Delete/1/yyyy-mm-dd
-        [HttpGet("Sitting/Delete/{sittingTypeId}/{dateString}")]
+        [HttpGet("Sittings/Delete/{sittingTypeId}/{dateString}")]
         public async Task<IActionResult> Delete(int sittingTypeId, string dateString)
         {
             /*  if (id == null || _context.Sittings == null)
@@ -200,35 +290,53 @@ namespace BeanSceneMVC.Controllers
             return View(sitting);
         }
 
-        // POST: Sittings/Delete/5
-        [HttpPost, ActionName("Delete")]
+        // POST: Sittings/Delete/1/yyyy-mm-dd
+        [HttpPost("Sittings/Delete/{sittingTypeId}/{dateString}"), ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(DateTime id)
+        public async Task<IActionResult> DeleteConfirmed(int sittingTypeId, string dateString)
         {
-            if (_context.Sittings == null)
+            /* if (_context.Sittings == null)
+             {
+                 return Problem("Entity set 'ApplicationDbContext.Sittings'  is null.");
+             }
+             var sitting = await _context.Sittings.FindAsync(id);
+             if (sitting != null)
+             {
+                 _context.Sittings.Remove(sitting);
+             }
+
+             await _context.SaveChangesAsync();
+             return RedirectToAction(nameof(Index));*/
+            //Convert date string to DateTime
+            DateTime sittingDate;
+            if (!DateTime.TryParse(dateString, out sittingDate)) return BadRequest("Invalid sitting date, must be'yyyy-mm-dd'. ");
+
+            //Check SectionType exists
+            SittingType? sittingType = await _context.SittingTypes.FindAsync(sittingTypeId);
+            if (sittingType == null) return NotFound("Sitting Type not found");
+
+            var sitting = await _context.Sittings
+                .FindAsync(sittingDate, sittingTypeId);
+            /* .FirstOrDefaultAsync(m => m.SittingTypeId == sittingTypeId && m.Date == sittingDate);*/
+            if (sitting == null)
             {
-                return Problem("Entity set 'ApplicationDbContext.Sittings'  is null.");
+                return NotFound("Sitting not found");
             }
-            var sitting = await _context.Sittings.FindAsync(id);
-            if (sitting != null)
-            {
-                _context.Sittings.Remove(sitting);
-            }
-            
+            _context.Sittings.Remove(sitting);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool SittingExists(DateTime id)
+        private bool SittingExists(DateTime date, int sittingTypeId)
         {
-          return (_context.Sittings?.Any(e => e.Date == id)).GetValueOrDefault();
+          return (_context.Sittings?.Any(e => e.Date == date&&e.SittingTypeId==sittingTypeId)).GetValueOrDefault();
         }
 
         private SittingViewModel GenerateDefaultViewModel()
         {
             //New view modol
             SittingViewModel viewModel = new SittingViewModel();
-            //Set session to null (if existing session)
+            //Set sitting to null (if existing sitting)
             viewModel.Sitting = null!;
             //Populate the selest list items
             viewModel.SittingTypeList = new SelectList(_context.SittingTypes, "Id", "Name");

@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<BeanSceneMVC.Models.Sitting>
 
 @{
-    ViewData["Title"] = "Create sitting";
+    ViewData["Title"] = "Manage sitting";
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -67,11 +67,11 @@
                     @Html.DisplayFor(modelItem => item.Status)
             <td>
                 <a asp-action="Edit" asp-route-sittingTypeId="@item.SittingTypeId" asp-route-dateString="@item.Date.ToString("yyyy-MM-dd")"
-                   class="btn btn-sm btn-secondary " title="Edit">
+                   class="btn btn-sm btn-primary " title="Edit">
                         <i class="bi bi-pencil-fill" aria-label="Edit"></i>
                     </a>
                     <a asp-action="Details" asp-route-sittingTypeId="@item.SittingTypeId" asp-route-dateString="@item.Date.ToString("yyyy-MM-dd")"
-                   class="btn btn-sm btn-primary " title="Details">
+                   class="btn btn-sm btn-secondary " title="Details">
                         <i class="bi bi-book-fill" aria-hidden="true"></i>
                     </a>
                     <a asp-action="Delete" asp-route-sittingTypeId="@item.SittingTypeId" asp-route-dateString="@item.Date.ToString("yyyy-MM-dd")"
