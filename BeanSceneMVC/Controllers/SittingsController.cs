@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BeanSceneMVC.Data;
 using BeanSceneMVC.Models;
+using BeanSceneMVC.ViewModels;
+
 
 namespace BeanSceneMVC.Controllers
 {
@@ -61,7 +63,8 @@ namespace BeanSceneMVC.Controllers
             ViewData["EndTimeId"] = new SelectList(_context.Timeslots, "Time", "Time");
             ViewData["SittingTypeId"] = new SelectList(_context.SittingTypes, "Id", "Name");
             ViewData["StartTimeId"] = new SelectList(_context.Timeslots, "Time", "Time");
-            return View();
+         /*   return View();*/
+           return View( GenerateDefaultViewModel());
         }
 
         // POST: Sittings/Create
@@ -219,6 +222,18 @@ namespace BeanSceneMVC.Controllers
         private bool SittingExists(DateTime id)
         {
           return (_context.Sittings?.Any(e => e.Date == id)).GetValueOrDefault();
+        }
+
+        private SittingViewModel GenerateDefaultViewModel()
+        {
+            //New view modol
+            SittingViewModel viewModel = new SittingViewModel();
+            //Set session to null (if existing session)
+            viewModel.Sitting = null!;
+            //Populate the selest list items
+            viewModel.SittingTypeList = new SelectList(_context.SittingTypes, "Id", "Name");
+            viewModel.TimeslotList = new SelectList(_context.Timeslots, "Time", "TimeFormatted");
+            return viewModel;
         }
     }
 }
