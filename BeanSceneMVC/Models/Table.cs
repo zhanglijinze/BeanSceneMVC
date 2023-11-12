@@ -14,6 +14,12 @@ namespace BeanSceneMVC.Models
         public int AreaId { get; set; }
         public Area? Area { get; set; }
 
+        //can also implement entity relationship in DBContext but it's not encouraged. OnModelCreating method. 
+
+        //Define a many-to-many relationship between reservation and room (check the room model)
+        [DisplayName("Reservations")]
+        public List<Reservation> Reservations { get; } = new();
+
         public Table() {
             Code = "";
         }
