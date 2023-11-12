@@ -1,10 +1,11 @@
 ﻿using BeanSceneMVC.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BeanSceneMVC.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<MenuCategory> MenuCategories { get; set; }
         public DbSet<MenuItem> MenuItems { get; set; }
@@ -101,8 +102,23 @@ namespace BeanSceneMVC.Data
                new SittingType { Id = 2, Name = "Lunch" },
                new SittingType { Id = 3, Name = "Dinner" }
            );
+            //Apply our entity configuration for ApplicationUser
+            builder.ApplyConfiguration(new ApplicationUserEntityConfiguration());
 
             base.OnModelCreating(builder);
+        }
+
+
+        //"Entity configuration" for ApplicationUser (to customise entity properties)
+
+        public class ApplicationUserEntityConfiguration : IEntityTypeConfiguration<ApplicationUser>
+        {
+            public void Configure(EntityTypeBuilder<ApplicationUser> builder)
+            {
+                //customising the properties/fields of the entity
+                builder.Property(u => u.FirstName).HasMaxLength(50);
+                builder.Property(u => u.LastName).HasMaxLength(50);
+            }
         }
     }
 }
