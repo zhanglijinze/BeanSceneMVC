@@ -14,6 +14,7 @@ namespace BeanSceneMVC.Data
         public DbSet<Timeslot> Timeslots { get; set; }
         public DbSet<SittingType> SittingTypes { get; set; }
         public DbSet<Sitting> Sittings { get; set; }
+        public DbSet<Reservation> Reservations { get; set; }
 
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
@@ -102,6 +103,17 @@ namespace BeanSceneMVC.Data
                new SittingType { Id = 2, Name = "Lunch" },
                new SittingType { Id = 3, Name = "Dinner" }
            );
+            //Define foreign key cascade rules
+            builder.Entity<Reservation>().HasOne(e => e.StartTime).WithMany().OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Reservation>().HasOne(e => e.EndTime).WithMany().OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Reservation>().HasOne(e => e.Sitting).WithMany().OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Reservation>().HasOne(e => e.Area).WithMany().OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Reservation>().HasOne(e => e.User).WithMany().OnDelete(DeleteBehavior.SetNull);
+
             //Apply our entity configuration for ApplicationUser
             builder.ApplyConfiguration(new ApplicationUserEntityConfiguration());
 
