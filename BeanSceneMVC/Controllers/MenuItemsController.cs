@@ -224,7 +224,7 @@ namespace BeanSceneMVC.Controllers
         {
           return (_context.MenuItems?.Any(e => e.Id == id)).GetValueOrDefault();
         }
-
+        //Add search and filter function in controller. 
         // GET: MenuItems/ViewAll
         public async Task<IActionResult> ViewAll(string?search, int? menuCategoryId)
         {
