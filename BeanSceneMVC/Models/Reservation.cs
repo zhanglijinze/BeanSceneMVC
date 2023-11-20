@@ -76,7 +76,7 @@ namespace BeanSceneMVC.Models
         [Required]
         public SourceEnum Source { get; set; }
 
-        // Define enum for statuses 
+        // Define enum for sources 
         public enum SourceEnum
         {
             Web = 0,

@@ -30,31 +30,63 @@
             @Html.DisplayNameFor(model => model.IsGlutenFree)
         </dt>
         <dd class = "col-sm-9">
-            @Html.DisplayFor(model => model.IsGlutenFree)
+            @Html.DisplayFor(model => model.IsGlutenFree)@if (Model.IsGlutenFree)
+                    { <span>Yes</span>
+                    }
+                    else
+                    {
+                        <span>No</span>
+                    }
         </dd>
         <dt class = "col-sm-3">
             @Html.DisplayNameFor(model => model.IsDiaryFree)
         </dt>
         <dd class = "col-sm-9">
-            @Html.DisplayFor(model => model.IsDiaryFree)
+            @Html.DisplayFor(model => model.IsDiaryFree)@if (Model.IsDiaryFree)
+                    { <span>Yes</span>
+                    }
+                    else
+                    {
+                        <span>No</span>
+                    }
         </dd>
         <dt class = "col-sm-3">
             @Html.DisplayNameFor(model => model.IsVegetarian)
         </dt>
         <dd class = "col-sm-9">
-            @Html.DisplayFor(model => model.IsVegetarian)
+            @Html.DisplayFor(model => model.IsVegetarian)@if (Model.IsVegetarian)
+            {
+                <span>Yes</span>
+            }
+            else
+            {
+                <span>No</span>
+            }
         </dd>
         <dt class = "col-sm-3">
             @Html.DisplayNameFor(model => model.IsVegan)
         </dt>
         <dd class = "col-sm-9">
-            @Html.DisplayFor(model => model.IsVegan)
+            @Html.DisplayFor(model => model.IsVegan)@if (Model.IsVegan)
+                    { <span>Yes</span>
+                    }
+                    else
+                    {
+                        <span>No</span>
+                    }
         </dd>
         <dt class = "col-sm-3">
             @Html.DisplayNameFor(model => model.IsAllergenFree)
         </dt>
         <dd class = "col-sm-9">
-            @Html.DisplayFor(model => model.IsAllergenFree)
+            @Html.DisplayFor(model => model.IsAllergenFree)@if (Model.IsAllergenFree)
+            {
+                <span>Yes</span>
+            }
+            else
+            {
+                <span>No</span>
+            }
         </dd>
         <dt class = "col-sm-3">
             @Html.DisplayNameFor(model => model.MenuCategory)
