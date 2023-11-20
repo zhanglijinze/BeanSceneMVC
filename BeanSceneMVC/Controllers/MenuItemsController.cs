@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using BeanSceneMVC.Data;
 using BeanSceneMVC.Models;
 using System.Diagnostics.Eventing.Reader;
+using Microsoft.Identity.Client;
+using System.ComponentModel.DataAnnotations;
 
 namespace BeanSceneMVC.Controllers
 {
@@ -225,11 +227,18 @@ namespace BeanSceneMVC.Controllers
           return (_context.MenuItems?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
-        // GET: MenuItems/ViewAll
-        public async Task<IActionResult> ViewAll(string?search, int? menuCategoryId)
-        {
-           
 
+        public enum Sort {
+            [Display(Name = "Lowest to Highest")]
+            Lowest_Highest,
+            [Display(Name = "Highest to lowest")]
+            Highest_Lowest,
+        }
+        // GET: MenuItems/ViewAll
+        public async Task<IActionResult> ViewAll(string?search, int? menuCategoryId,string?sort)
+        {
+            var sortPrice = Enum.GetValues(typeof(Sort)).Cast<Sort>();
+            ViewBag.MyPriceSort = new SelectList(sortPrice);
 
             IQueryable<MenuItem> menuItems = _context.MenuItems;
 
@@ -239,21 +248,24 @@ namespace BeanSceneMVC.Controllers
            
                 menuItems = menuItems.Where(m => m.Name.Contains(search));
             }
-
-           
-
             if (menuCategoryId != null)
             {
               
                 menuItems = menuItems.Where(m => m.MenuCategoryId == menuCategoryId);
 
             }
+            if (sort != null)
+            {
+                if (sort == "Lowest_Highest")
+                { menuItems = menuItems.OrderBy(m => m.Price); } 
+                else{ menuItems = menuItems.OrderByDescending(m => m.Price); }
 
+            }
+            else { menuItems = menuItems.OrderBy(m => m.Name); }
 
             ViewData["MenuCategoryList"] = new SelectList(_context.MenuCategories, "Id", "Name");
-
-           
-            return View(await menuItems.OrderBy(m => m.Name).Include(m => m.MenuCategory).ToListAsync());
+                             
+            return View(await menuItems.Include(m => m.MenuCategory).ToListAsync());
 
           
             var menuItemsWithMenuCategory = menuItems = _context.MenuItems.Include(m => m.MenuCategory);
@@ -261,13 +273,13 @@ namespace BeanSceneMVC.Controllers
           
             if (!string.IsNullOrEmpty(search))
             {
-                // Filter book results
+                // Filter menu results
                 menuItemsWithMenuCategory = menuItemsWithMenuCategory.Where(m => m.Name.Contains(search))
                     //.Where(b => b.Title.ToLower().Contains(search.ToLower()))
                     .Include(m => m.MenuCategory);
             }
 
-            // Load view with books
+            // Load view with menus
             return View(await menuItemsWithMenuCategory.ToListAsync());
         }
     }

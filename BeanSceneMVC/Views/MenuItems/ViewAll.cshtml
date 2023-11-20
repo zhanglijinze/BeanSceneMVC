@@ -18,6 +18,12 @@
         "<All menu category>",
         new{aria_label="Select a category"})
 
+        @Html.DropDownList(
+        "sort",
+        (SelectList)ViewBag.MyPriceSort,
+        "<Sort by price>",
+        new{aria_label="Select a category"})
+
         <button type="submit" class="btn btn-primary">
             <i class="bi bi-search-heart"></i>
             Search
