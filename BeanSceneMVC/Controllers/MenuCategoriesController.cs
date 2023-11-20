@@ -148,6 +148,8 @@ namespace BeanSceneMVC.Controllers
             var menuCategory = await _context.MenuCategories.FindAsync(id);
             if (menuCategory != null)
             {
+                var menuGroup= await _context.MenuItems.Include(c=>c.MenuCategory).FirstOrDefaultAsync(c=>c.MenuCategoryId==id);
+                if (menuGroup != null) { return NotFound("Menu Category was linked to at least one menu item. Delete failed"); }else
                 _context.MenuCategories.Remove(menuCategory);
             }
             

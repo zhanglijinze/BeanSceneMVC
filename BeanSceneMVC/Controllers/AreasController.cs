@@ -148,6 +148,11 @@ namespace BeanSceneMVC.Controllers
             var area = await _context.Areas.FindAsync(id);
             if (area != null)
             {
+                var tableGroup = await _context.Tables.Include(t => t.Area).FirstOrDefaultAsync(t => t.AreaId == id);
+                if (tableGroup != null) 
+                {
+                    return NotFound("Area was linked to at least one table. Delete failed");
+                }
                 _context.Areas.Remove(area);
             }
             
