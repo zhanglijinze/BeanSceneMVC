@@ -29,9 +29,6 @@ namespace BeanSceneMVC.Models
         public DateTime EndTimeId { get; set; }
 
         [Required]
-        [DisplayName("Area")]
-        public int AreaId { get; set; }
-        [Required]
         [DisplayName("Number of People")]
         [Range(1, 5000)]
         public ushort NumberOfPeople { get; set; } = 1;
@@ -103,8 +100,7 @@ namespace BeanSceneMVC.Models
 
 
 
-        [Required]
-        public Area Area { get; set; } = null!;
+
 
         //Link to User entity ... need to ustomise the Identity User model.....
         [ForeignKey("UserId")]

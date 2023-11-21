@@ -110,7 +110,7 @@ namespace BeanSceneMVC.Data
 
             builder.Entity<Reservation>().HasOne(e => e.Sitting).WithMany().OnDelete(DeleteBehavior.Restrict);
 
-            builder.Entity<Reservation>().HasOne(e => e.Area).WithMany().OnDelete(DeleteBehavior.Restrict);
+            /*builder.Entity<Reservation>().HasOne(e => e.Area).WithMany().OnDelete(DeleteBehavior.Restrict);*/
 
             builder.Entity<Reservation>().HasOne(e => e.User).WithMany().OnDelete(DeleteBehavior.SetNull);
 

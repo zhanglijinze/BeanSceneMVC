@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BeanSceneMVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231112090014_AddReservationModel")]
+    [Migration("20231121021802_AddReservationModel")]
     partial class AddReservationModel
     {
         /// <inheritdoc />
@@ -217,9 +217,6 @@ namespace BeanSceneMVC.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AreaId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
@@ -267,8 +264,6 @@ namespace BeanSceneMVC.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AreaId");
 
                     b.HasIndex("EndTimeId");
 
@@ -807,12 +802,6 @@ namespace BeanSceneMVC.Migrations
 
             modelBuilder.Entity("BeanSceneMVC.Models.Reservation", b =>
                 {
-                    b.HasOne("BeanSceneMVC.Models.Area", "Area")
-                        .WithMany()
-                        .HasForeignKey("AreaId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("BeanSceneMVC.Models.Timeslot", "EndTime")
                         .WithMany()
                         .HasForeignKey("EndTimeId")
@@ -835,8 +824,6 @@ namespace BeanSceneMVC.Migrations
                         .HasForeignKey("Date", "SittingTypeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("Area");
 
                     b.Navigation("EndTime");
 

@@ -22,7 +22,6 @@ namespace BeanSceneMVC.Migrations
                     SittingTypeId = table.Column<int>(type: "int", nullable: false),
                     StartTimeId = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndTimeId = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    AreaId = table.Column<int>(type: "int", nullable: false),
                     NumberOfPeople = table.Column<int>(type: "int", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
@@ -35,12 +34,6 @@ namespace BeanSceneMVC.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Reservations", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Reservations_Areas_AreaId",
-                        column: x => x.AreaId,
-                        principalTable: "Areas",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Reservations_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -90,11 +83,6 @@ namespace BeanSceneMVC.Migrations
                         principalColumn: "Code",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Reservations_AreaId",
-                table: "Reservations",
-                column: "AreaId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reservations_Date_SittingTypeId",
