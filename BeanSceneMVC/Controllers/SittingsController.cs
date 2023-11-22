@@ -8,12 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using BeanSceneMVC.Data;
 using BeanSceneMVC.Models;
 using BeanSceneMVC.ViewModels;
-
-
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace BeanSceneMVC.Controllers
 {
+    [Authorize(Roles ="Staff, Manager")]
     public class SittingsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -24,6 +23,7 @@ namespace BeanSceneMVC.Controllers
         }
 
         // GET: Sittings
+        [AllowAnonymous] // Allow access by anyone like make reservation
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Sittings.Include(s => s.EndTime).Include(s => s.SittingType).Include(s => s.StartTime);
@@ -59,7 +59,14 @@ namespace BeanSceneMVC.Controllers
             return View(sitting);
         }
 
+
+
         // GET: Sittings/Create
+        //Allow access to Staff or user
+        //[Authorize(Roles="Staff")]
+        //Allow access to a user that has both Staff And user roles
+        /*  [Authorize(Roles ="Staff")]
+          [Authorize(Roles ="User")]*/
         public IActionResult Create()
         {
           /*  ViewData["EndTimeId"] = new SelectList(_context.Timeslots, "Time", "Time");
@@ -252,6 +259,7 @@ namespace BeanSceneMVC.Controllers
         }
 
         // GET: Sittings/Delete/1/yyyy-mm-dd
+        [Authorize(Roles = "Manager")]
         [HttpGet("Sittings/Delete/{sittingTypeId}/{dateString}")]
         public async Task<IActionResult> Delete(int sittingTypeId, string dateString)
         {
@@ -291,6 +299,7 @@ namespace BeanSceneMVC.Controllers
         }
 
         // POST: Sittings/Delete/1/yyyy-mm-dd
+        [Authorize(Roles = "Manager")]
         [HttpPost("Sittings/Delete/{sittingTypeId}/{dateString}"), ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int sittingTypeId, string dateString)
