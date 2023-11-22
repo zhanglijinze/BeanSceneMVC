@@ -1,0 +1,49 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using BeanSceneMVC.Models
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    //Get the currently logged-in user (and pass through the UserManager context)
+    ApplicationUser user = await UserManager.GetUserAsync(User) ?? new ApplicationUser();
+    user.UserManager = UserManager;
+}
+
+<ul class="navbar-nav flex-grow-1">
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-area="" asp-controller="MenuItems" asp-action="ViewAll">Menu</a>
+    </li>
+
+    @if (user.IsUser)
+    {
+        @*Custom navigation for users (customers/members)    *@
+            <partial name="_MainNavUserPartial" />
+    }
+    @if (user.IsStaff)
+    {
+        @*Custom navigation for All staff   *@
+            <partial name="_MainNavStaffPartial" />
+    }
+    @if (user.IsUser && !user.IsManager)
+    {
+        @*Custom navigation for regular staff only (not managers)    *@
+        //to do 
+    }
+    @if (user.IsManager)
+    {
+        @*Custom navigation for Manager   *@
+            <partial name="_MainNavManagerPartial" />
+    }
+
+
+
+
+
+</ul>

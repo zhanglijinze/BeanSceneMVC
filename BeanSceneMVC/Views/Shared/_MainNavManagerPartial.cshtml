@@ -1,0 +1,47 @@
+﻿@*Custom navigation for managers *@
+
+<li class="nav-item dropdown">
+    <a class="nav-link text-dark dropdown-toggle" href="#" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+        <i class="bi bi-square-fill"></i>
+        Tables
+    </a>
+    <ul class="dropdown-menu">
+        <li class="dropdown-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="Areas" asp-action="Index">Manage area</a>
+        </li>
+
+        <li class="dropdown-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="Areas" asp-action="Create">Add area</a>
+        </li>
+        <li>
+            <hr class="dropdown-divider">
+        </li>
+        <li class="dropdown-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="Tables" asp-action="Index">Manage table</a>
+        </li>
+
+        <li class="dropdown-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="Tables" asp-action="Create">Add table</a>
+        </li>
+
+    </ul>
+
+</li>
+<li class="nav-item dropdown">
+    <a class="nav-link text-dark dropdown-toggle" href="#" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+        <i class="bi bi-calendar-check-fill"></i>
+        Sitting
+    </a>
+    <ul class="dropdown-menu">
+        <li class="dropdown-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="Sittings" asp-action="Index">Manage sittings</a>
+        </li>
+
+        <li class="dropdown-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="Sittings" asp-action="Create">Add sitting</a>
+        </li>
+
+
+    </ul>
+
+</li>
