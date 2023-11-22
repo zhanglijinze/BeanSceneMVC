@@ -25,6 +25,10 @@ body {
 .table {
     color:white
 }
+label {
+    color: #4AA1B5
+}
+
 
 .light-mode .table { color:black;
 }
