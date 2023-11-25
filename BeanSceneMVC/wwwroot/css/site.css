@@ -25,8 +25,12 @@ body {
 .table {
     color:white
 }
-label {
+.form-floating label {
     color: #4AA1B5
+}
+.form-floating {
+
+margin-bottom:15px;
 }
 
 
@@ -50,7 +54,10 @@ body .btn-danger {
     font-weight: 500
 }
 
-
+.switch{
+background-color:black;
+    color:white;
+}
 
 /*
 

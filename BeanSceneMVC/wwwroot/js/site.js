@@ -11,13 +11,18 @@
 // Function to apply the mode
 function applyMode(isLightMode) {
     const body = document.body;
+    const button = document.querySelector(".toggle")
     if (isLightMode) {
         body.classList.remove('hero'); // Apply light mode (black text)
         body.classList.add('light-mode');
+        button.classList.add('switch')
+        button.textContent="Dark mode"
         
     } else {
         body.classList.remove('light-mode');
         body.classList.add('hero'); // Apply dark mode (white text)
+        button.classList.remove('switch')
+        button.textContent ="Light mode"
     }
 }
 
@@ -30,7 +35,8 @@ function toggleLightMode() {
 
 // Apply mode as soon as the page is loaded
 (function () {
-
+    const button = document.querySelector(".toggle")
+    button.textContent="Dark mode"
     const savedMode = JSON.parse(localStorage.getItem('lightMode'));
     // Default to dark mode (white text) if no mode is set
     const isLightMode = savedMode !== null ? savedMode : false;
