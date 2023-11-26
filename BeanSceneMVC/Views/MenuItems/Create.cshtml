@@ -34,11 +34,7 @@
                 <input asp-for="Price" class="form-control" />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Photo" class="control-label"></label>
-                <input asp-for="Photo" class="form-control" />
-                <span asp-validation-for="Photo" class="text-danger"></span>
-            </div>
+            
             <div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="IsGlutenFree" /> @Html.DisplayNameFor(model => model.IsGlutenFree)
@@ -68,6 +64,18 @@
                 <label asp-for="MenuCategoryId" class="control-label"></label>
                 <select asp-for="MenuCategoryId" class ="form-control" asp-items="ViewBag.MenuCategoryId"></select>
             </div>
+            <div class="form-group">
+                <label asp-for="Photo" class="control-label"></label>
+                 <input type="text" asp-for="Photo" class="form-control" />
+                 @*Drag and drop image uploading https://docs.dropzone.dev/getting-started/setup/imperative*@
+                 <div id="image-dropzone">
+                     Drag and drop file here or click to upload
+                 </div>
+                 <span asp-validation-for="Photo" class="text-danger"></span>
+            </div>
+         
+
+
                 </div>
             </div>
             <div class="form-group">
@@ -97,6 +105,44 @@
             //Initialise the Quill JS editor for the #Description hidden field
 
             initialiseQuillEditor("Description",".quill-editor")
+
+            //Disable auto-discovery of Dropzones
+            Dropzone.autoDiscover = false
+
+            //Configuration for the dropzone - selector + config object
+        let imageDropzone = new Dropzone("#image-dropzone", {
+            paramName:"file", //The name that will be used to transfer the file
+            url:"/MenuItems/ImageUpload", //URL endpoint/action for the image upload
+            maxFiles:1, //only 1 file can be uploaded
+            init:function(){  //Runs on initialisation
+            //Add the "dropzone" class onto our div to activate the default Dropzone styling
+            //It's not added initially in order to stop the dropzone being 
+            if (this.element) 
+            {
+            this.element.classList.add("dropzone")
+            }
+            },
+            success: function(file) // runs on successful image upload
+            {
+            console.log("Image uploaded successfully...")
+            
+            //Get uploaded image url from response from ImageUpload action (default to empty string)
+            const uploadedFileUrl = file?.xhr?.responseText??""
+            //Get hidden input for ImageUrl
+            const imageUrlInput = document.getElementById("Photo")
+
+            //Make sure both the hidden input and the image URL exist
+            if(imageUrlInput && uploadedFileUrl)
+            {
+            //Update ImageUrl for the menu item based on the uploaded file (remove extra double quotes from responseText)
+              imageUrlInput.value = uploadedFileUrl.replaceAll('"','')
+
+            }
+
+            }
+            
+            
+            })
 
         </script>
 }

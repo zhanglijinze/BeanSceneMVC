@@ -16,10 +16,12 @@ namespace BeanSceneMVC.Controllers
     public class MenuItemsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public MenuItemsController(ApplicationDbContext context)
+        public MenuItemsController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
+            _webHostEnvironment = webHostEnvironment;//Info about web hosting environment to generate paths on the server (saving images)
         }
 
         // GET: MenuItems
@@ -281,6 +283,33 @@ namespace BeanSceneMVC.Controllers
 
             // Load view with menus
             return View(await menuItemsWithMenuCategory.ToListAsync());
+        }
+
+        //Post:MenuItem/ImageUpload
+        //Handle image upload for menuItem
+        [HttpPost, ActionName("ImageUpload")]
+        public async Task<IActionResult> ImageUpload(IFormFile file)
+        {   //Image save folder within wwwroot
+
+            string imageFoler = "Images/Menu";
+
+            //Create folder if it doesn't exist
+            string dirPath = Path.Combine(_webHostEnvironment.WebRootPath, imageFoler);
+            if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
+
+            //Create image file (handle the upload)
+            string filePath = Path.Combine(dirPath, file.FileName);
+            using (FileStream fs = System.IO.File.Create(filePath))
+            {
+                file.CopyTo(fs);
+            }
+
+
+                //return 200+image path
+
+               /* return StatusCode(200, $"/{imageFoler}/{file.FileName}");*/
+
+            return StatusCode(200, $"{file.FileName}");
         }
     }
 }
