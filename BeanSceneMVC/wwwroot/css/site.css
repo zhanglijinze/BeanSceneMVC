@@ -63,6 +63,10 @@ background-color:black;
 color:black
 }
 
+.container {
+max-width:1800px;
+
+}
 /*
 
 --typography
@@ -142,7 +146,7 @@ article {
 }
 /*Set a fixed height on the image container (constraint book images to same area)*/
 .menu-card__image-container {
-    height: 250px;
+    height: 350px;
     /*max-height: 100%;*/
     text-align: center;
 }
@@ -190,8 +194,9 @@ vertical-align:middle;
 }
 
 .manage-menus-table .menu-image-thumbnail {
-    max-height: 50px;
-    width: auto;
+    height: 50px;
+    width: 50px;
+    object-fit:fill;
 }
 
 /*.fill-box {
