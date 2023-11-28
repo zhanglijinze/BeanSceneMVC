@@ -89,7 +89,16 @@
                 @Html.DisplayFor(modelItem => item.EndTime.Time)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.User.Id)
+                @*@Html.DisplayFor(modelItem => item.User.Id)*@
+                    @if (item.User != null)
+                    {
+                        @Html.DisplayFor(modelItem => item.User.Id)
+                    }
+                    else
+                    {
+                        @:N/A
+                    }
+
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

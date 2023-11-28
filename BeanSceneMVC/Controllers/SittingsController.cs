@@ -345,11 +345,13 @@ namespace BeanSceneMVC.Controllers
         {
             //New view modol
             SittingViewModel viewModel = new SittingViewModel();
-            //Set sitting to null (if existing sitting)
+            //Set sitting to null (if no existing sitting)
             viewModel.Sitting = null!;
             //Populate the selest list items
             viewModel.SittingTypeList = new SelectList(_context.SittingTypes, "Id", "Name");
             viewModel.TimeslotList = new SelectList(_context.Timeslots, "Time", "TimeFormatted");
+            //Sitting list - combine Date & SittingType for display
+
             return viewModel;
         }
     }

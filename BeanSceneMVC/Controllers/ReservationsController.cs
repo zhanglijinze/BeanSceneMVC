@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BeanSceneMVC.Data;
 using BeanSceneMVC.Models;
+using BeanSceneMVC.ViewModels;
+using NuGet.Configuration;
+using System.Text.RegularExpressions;
 
 namespace BeanSceneMVC.Controllers
 {
@@ -51,11 +54,12 @@ namespace BeanSceneMVC.Controllers
         // GET: Reservations/Create
         public IActionResult Create()
         {
-            ViewData["EndTimeId"] = new SelectList(_context.Timeslots, "Time", "Time");
+        /*    ViewData["EndTimeId"] = new SelectList(_context.Timeslots, "Time", "Time");
             ViewData["Date"] = new SelectList(_context.Sittings, "Date", "Date");
             ViewData["StartTimeId"] = new SelectList(_context.Timeslots, "Time", "Time");
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
-            return View();
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");*/
+            //Load view with the view model
+            return View(GenerateDefaultViewModel());
         }
 
         // POST: Reservations/Create
@@ -63,19 +67,99 @@ namespace BeanSceneMVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UserId,Date,SittingTypeId,StartTimeId,EndTimeId,NumberOfPeople,FirstName,LastName,Email,Phone,Note,Status,Source")] Reservation reservation)
+      /*  public async Task<IActionResult> Create([Bind("Id,UserId,Date,SittingTypeId,StartTimeId,EndTimeId,NumberOfPeople,FirstName,LastName,Email,Phone,Note,Status,Source")] Reservation reservation)*/
+               public async Task<IActionResult> Create(ReservationViewModel viewModel)
         {
+            //Sitting ID regex pattern for validation (Data:Type, e.g 2023-11-28:1)
+
+            Regex regexSittingId = new Regex(@"^(\d{4}-\d{2}-\d{2}):(\d)$");
+
+            // Match sitting ID against regex pattern
+            Match match = regexSittingId.Match(viewModel.SittingId ?? "");
+
+            // Check if sitting ID is not valid
+            if (!match.Success) return BadRequest("Invalid Sitting ID, should be in the format: 2023-11-03:1");
+
+            // Extract the sitting date and sitting type ID
+            string sittingDateString = match.Groups[1].Value;
+            int sittingTypeId = int.Parse(match.Groups[2].Value);
+
+            // Convert date string into DateTime
+            DateTime sittingDate;
+            if (!DateTime.TryParse(sittingDateString, out sittingDate)) return BadRequest("Invalid sitting date, must be 'yyyy-mm-dd'.");
+
+            // Check SittingType exists
+            SittingType? sittingType = await _context.SittingTypes.FindAsync(sittingTypeId);
+            if (sittingType == null) return NotFound("Sitting Type not found.");
+
+            // Check Sitting exists
+            var sitting = await _context.Sittings
+                .Include(s => s.SittingType)
+                .Include(s => s.StartTime)
+                .Include(s => s.EndTime)
+                .FirstOrDefaultAsync(s => s.SittingTypeId == sittingTypeId && s.Date == sittingDate);
+            if (sitting == null) return NotFound("Sitting not found.");
+
+
+            //Get model from the view model
+            Reservation reservation = viewModel.Reservation;
+
+            // Attach session data to the reservation
+            reservation.Sitting = sitting;
+
+
+            //Find related entities based on their foreign key values (IDs)
+
+
+            Timeslot? startTime = await _context.Timeslots.FindAsync(reservation.StartTimeId);
+
+            Timeslot? endTime = await _context.Timeslots.FindAsync(reservation.EndTimeId);
+
+            //Check if related entities don't exist - throw 404 or a nice error message...
+
+           
+            if (startTime == null) return NotFound("Start timeslot not found");
+            if (endTime == null) return NotFound("End timeslot not found");
+
+            //Assign related entities to the model
+         
+            reservation.StartTime = startTime;
+            reservation.EndTime = endTime;
+
+            //Todo:Get currently logged-in user and assign...
+
+            //Manually revalidate the model
+            ModelState.Clear();
+            TryValidateModel(reservation);
+
+            //Todo: validate start & end times
+
+            //Set the reservation status to "Pending"
+
+            reservation.Status = Reservation.StatusEnum.Pending;
+
+            //Check model is valid
             if (ModelState.IsValid)
             {
                 _context.Add(reservation);
                 await _context.SaveChangesAsync();
+
+                //Todo:Redirect anonymous user (or customer) to "confirmation" view
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EndTimeId"] = new SelectList(_context.Timeslots, "Time", "Time", reservation.EndTimeId);
-            ViewData["Date"] = new SelectList(_context.Sittings, "Date", "Date", reservation.Date);
-            ViewData["StartTimeId"] = new SelectList(_context.Timeslots, "Time", "Time", reservation.StartTimeId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", reservation.UserId);
-            return View(reservation);
+            /* ViewData["EndTimeId"] = new SelectList(_context.Timeslots, "Time", "Time", reservation.EndTimeId);
+             ViewData["Date"] = new SelectList(_context.Sittings, "Date", "Date", reservation.Date);
+             ViewData["StartTimeId"] = new SelectList(_context.Timeslots, "Time", "Time", reservation.StartTimeId);
+             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", reservation.UserId);*/
+
+            //Build the view model (viewModel as the parameter will take the viewModel that has the reservation and pass it in here and method would not create a new viewModel with reservation but populate with dropdown list. )
+             viewModel = GenerateDefaultViewModel(viewModel);
+
+            //Put sitting data into the view model
+            viewModel.Reservation = reservation;
+            //Load the view with our View Model
+            return View(viewModel);
         }
 
         // GET: Reservations/Edit/5
@@ -181,6 +265,40 @@ namespace BeanSceneMVC.Controllers
         private bool ReservationExists(int id)
         {
           return (_context.Reservations?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+
+        private ReservationViewModel GenerateDefaultViewModel(ReservationViewModel?viewModel=null)
+        {
+            //Check if no view model passed in
+            if (viewModel == null)
+            {
+                //New view modol
+           viewModel = new ReservationViewModel();
+
+                //Set reservation to null (if no existing reservation)
+                viewModel.Reservation = null!;
+            }
+         
+            //Populate the selest list items
+           /* viewModel.SittingTypeList = new SelectList(_context.SittingTypes, "Id", "Name");*/
+            viewModel.TimeslotList = new SelectList(_context.Timeslots, "Time", "TimeFormatted");
+
+            viewModel.SittingList = new SelectList(
+                _context.Sittings
+                .Select(s => new SelectListItem
+                {
+                    //E.g. 2023-10-26:1
+                    Value = s.Date.ToString("yyyy-MM-dd") + ":" +
+                s.SittingTypeId,
+                    //E.g. 26/10/2023 - Morning (09:00 AM-11:00 AM)
+                    Text = $"{s.Date.ToShortDateString()} - {s.SittingType.Name} ({s.StartTime.TimeFormatted}-{s.EndTime.TimeFormatted})"
+
+                }),
+                "Value",
+                "Text"
+               );
+     
+            return viewModel;
         }
     }
 }
