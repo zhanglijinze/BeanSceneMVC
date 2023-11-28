@@ -29,7 +29,7 @@ namespace BeanSceneMVC.Models
         public DateTime EndTimeId { get; set; }
 
         [Required]
-        [DisplayName("Number of People")]
+        [DisplayName("No. of People")]
         [Range(1, 5000)]
         public ushort NumberOfPeople { get; set; } = 1;
         [Required]
