@@ -17,7 +17,7 @@ namespace BeanScene.Tests.Controllers
 
             //Arrange (get everything ready)
 
-            var controller = new MenuItemsController(_context);
+            var controller = new MenuItemsController(_context, _webHostEnvironment);
 
 
 
@@ -38,7 +38,7 @@ namespace BeanScene.Tests.Controllers
 
             //Arrange (get everything ready)
 
-            var controller = new MenuItemsController(_context);
+            var controller = new MenuItemsController(_context, _webHostEnvironment);
 
             const int EXISTING_MENUITEM_ID = 1;
 
@@ -59,7 +59,7 @@ namespace BeanScene.Tests.Controllers
 
             //Arrange (get everything ready)
 
-            var controller = new MenuItemsController(_context);
+            var controller = new MenuItemsController(_context, _webHostEnvironment);
 
 
             //Act (run the code being tested)
@@ -79,7 +79,7 @@ namespace BeanScene.Tests.Controllers
 
             //Arrange (get everything ready)
 
-            var controller = new MenuItemsController(_context);
+            var controller = new MenuItemsController(_context, _webHostEnvironment);
 
             const int EXISTING_MENUITEM_ID = 12;
 
@@ -99,7 +99,7 @@ namespace BeanScene.Tests.Controllers
 
             //Arrange (get everything ready) - create controller and add objectvalidator to stop null exception in TryValidateModel()
 
-            var controller = new MenuItemsController(_context);
+            var controller = new MenuItemsController(_context, _webHostEnvironment);
             controller.ObjectValidator = new ObjectValidator();
             //Valid menu item
             MenuItem menuItem = new MenuItem
@@ -149,7 +149,7 @@ namespace BeanScene.Tests.Controllers
 
             //Arrange (get everything ready) - create controller and add objectvalidator to stop null exception in TryValidateModel()
 
-            var controller = new MenuItemsController(_context);
+            var controller = new MenuItemsController(_context, _webHostEnvironment);
             controller.ObjectValidator = new ObjectValidator();
 
             //InValid menu item (bad category)
@@ -197,7 +197,7 @@ namespace BeanScene.Tests.Controllers
 
             //Arrange (get everything ready) - create controller and add objectvalidator to stop null exception in TryValidateModel()
 
-            var controller = new MenuItemsController(_context);
+            var controller = new MenuItemsController(_context, _webHostEnvironment );
             controller.ObjectValidator = new ObjectValidator();
 
             //InValid menu item (bad menu item)

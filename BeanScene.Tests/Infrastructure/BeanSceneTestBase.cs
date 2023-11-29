@@ -1,6 +1,7 @@
 ﻿
 using BeanSceneMVC.Data;
 using BeanSceneMVC.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,8 @@ namespace BeanScene.Tests.Infrastructure
     public class BeanSceneTestBase: IDisposable
     {
         protected readonly ApplicationDbContext _context;
+        protected readonly IWebHostEnvironment _webHostEnvironment;
+
         public BeanSceneTestBase() 
         {
 
