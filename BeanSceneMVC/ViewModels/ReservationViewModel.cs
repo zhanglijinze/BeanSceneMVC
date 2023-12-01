@@ -16,6 +16,9 @@ namespace BeanSceneMVC.ViewModels
         public SelectList SittingList { get; set; } = null!;
 
         /*  public SelectList SittingTypeList { get; set; } = null!;*/
+        // Assigned/unassigned rooms
+        public SelectList AssignedTablesList { get; set; } = null!;
+        public SelectList UnassignedTablesList { get; set; } = null!;
 
     }
 }

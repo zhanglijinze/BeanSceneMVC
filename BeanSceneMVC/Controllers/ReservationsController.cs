@@ -29,6 +29,29 @@ namespace BeanSceneMVC.Controllers
         // GET: Reservations
         public async Task<IActionResult> Index()
         {
+            var today = DateTime.Today;
+            var twoWeeksLater = today.AddDays(14);
+
+            var reservationsInNextTwoWeeks = _context.Reservations
+                                             .Where(r => r.Date > today && r.Date <= twoWeeksLater);
+            var totalReservationsCount = await reservationsInNextTwoWeeks.CountAsync();
+
+            var statusCounts = await reservationsInNextTwoWeeks
+                                     .GroupBy(r => r.Status)
+                                     .Select(group => new { Status = group.Key, Count = group.Count() })
+                                     .ToListAsync();
+            var pending = await reservationsInNextTwoWeeks.CountAsync(r=>r.Status==Reservation.StatusEnum.Pending);
+            var chartData = statusCounts.Select(sc => new
+            {
+                y = (double)sc.Count / totalReservationsCount * 100, // Calculate percentage
+                label = sc.Status.ToString()        
+            }).ToList();
+
+            // Pass the data to the view
+            ViewBag.ChartData = Newtonsoft.Json.JsonConvert.SerializeObject(chartData);
+            ViewBag.ChartDataPending = Newtonsoft.Json.JsonConvert.SerializeObject(pending);
+
+
             /*var applicationDbContext = _context.Reservations.Include(r => r.EndTime).Include(r => r.Sitting).Include(r => r.StartTime).Include(r => r.User);
             return View(await applicationDbContext.ToListAsync());*/
             IQueryable<Reservation> reservations;

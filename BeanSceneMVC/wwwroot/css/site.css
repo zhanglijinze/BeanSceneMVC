@@ -300,12 +300,12 @@ table input[type="checkbox" i]:disabled {
 /*
     Status buttons
 */
-.btn:is(.status-Pending, .status-Confirmed, .status-InProgress, .status-Completed, .status-Cancelled) {
+.btn:is(.status-Pending, .status-Confirmed, .status-Sitted, .status-Completed, .status-Cancelled) {
     border: 1px solid var(--color);
     color: var(--color);
 }
 
-    .btn:is(.status-Pending, .status-Confirmed, .status-InProgress, .status-Completed, .status-Cancelled):is(:hover, :focus, .active) {
+    .btn:is(.status-Pending, .status-Confirmed, .status-Sitted, .status-Completed, .status-Cancelled):is(:hover, :focus, .active) {
         background-color: var(--color);
         color: white;
     }
@@ -318,7 +318,7 @@ table input[type="checkbox" i]:disabled {
     --color: #32cd32; /* Bright lime green */
 }
 
-.status-InProgress {
+.status-Sitted {
     --color: #ff7f50; /* Bright coral */
 }
 
@@ -328,4 +328,9 @@ table input[type="checkbox" i]:disabled {
 
 .status-Cancelled {
     --color: #ff1493; /* Deep pink */
+}
+
+.button-Home {
+/*    max-height: 55px;
+    max-width: 260px;*/
 }

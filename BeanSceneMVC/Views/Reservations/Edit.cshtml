@@ -117,8 +117,39 @@
                 <input type="submit" value="Save" class="btn btn-primary" />
                 <a asp-action="Index" class="btn btn-secondary">Back to List</a>
             </div>
+            <div>
+                <h2>Tables assigned</h2>
+                <div class="row">
+                    <form asp-action="AssignTable" class="col-md-6 d-flex flex-column gap-2">
+                        <input type="hidden" name="reservationId" value="@Model.Reservation.Id" />
+                        <div class="form-group">
+                            <label for="assignTableCode" class="control-label">Available tables</label>
+                            <select id="assignTableCode" name="roomCode" class="form-control" multiple asp-items="Model.UnassignedTablesList"></select>
+                            @*<span asp-validation-for="Reservation.Status" class="text-danger"></span>*@
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Assign" class="btn btn-primary" />
+                        </div>
+                    </form>
+                    <form asp-action="UnassignTable" class="col-md-6 d-flex flex-column gap-2">
+                        <input type="hidden" name="reservationId" value="@Model.Reservation.Id" />
+                        <div class="form-group">
+                            <label for="unassignTableCode" class="control-label">Assigned tables</label>
+                            <select id="unassignTableCode" name="roomCode" class="form-control" multiple asp-items="Model.AssignedTablesList"></select>
+                            @*<span asp-validation-for="Reservation.Status" class="text-danger"></span>*@
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Unassign" class="btn btn-primary" />
+                        </div>
+                    </form>
+                </div>
+
+
+            </div>
         </form>
     </div>
+    
+
 </div>
 
 

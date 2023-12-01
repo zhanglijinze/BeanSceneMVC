@@ -5,8 +5,10 @@
 @inject SignInManager<ApplicationUser> SignInManager
     @inject UserManager<ApplicationUser> UserManager
 
-    @{
-        //Get the currently logged-in user (and pass through the UserManager context)
+@{
+    var chartData = ViewBag.ChartData;
+    var pending = ViewBag.ChartDataPending;
+    //Get the currently logged-in user (and pass through the UserManager context)
         ApplicationUser user = await UserManager.GetUserAsync(User) ?? new ApplicationUser();
         user.UserManager = UserManager;
         bool isReadOnly = !user.IsManager && !user.IsStaff;
@@ -19,10 +21,17 @@
 
 <h1>@ViewData["Title"]</h1>
 
+
+
 <p>
     <a asp-action="Create"class="btn btn-primary">+ Add reservation</a>
 </p>
-@*<div id="chartContainer" style="height: 370px; width: 100%;"></div>*@
+
+@if (user.IsManager)
+{ 
+<div id="chartContainer" style="height: 450px; width: 100%;"></div>
+}
+
 <table class="table">
     <thead>
         <tr>
@@ -144,3 +153,8 @@
         
     </tbody>
 </table>
+<script>
+    var globalChartData = @Html.Raw(chartData);
+    var pending = @Html.Raw(pending);
+
+</script>

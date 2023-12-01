@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BeanSceneMVC.Data;
 using BeanSceneMVC.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BeanSceneMVC.Controllers
 {
+    [Authorize(Roles = "Staff,Manager")]
     public class TablesController : Controller
     {
         private readonly ApplicationDbContext _context;
