@@ -1,0 +1,75 @@
+﻿@model BeanSceneMVC.Models.Reservation
+@{
+    ViewData["Title"] = "Reservation created";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h1>Reservation #@(Model.Id) created</h1>
+<p>Your reservation has been received and we will confirm with you before your session.</p>
+<hr />
+<div>
+    <h4>Reservation details</h4>
+    <dl class="row">
+        <dt class="col-sm-2">
+            Reservation time
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.StartTime.Time)
+            -
+            @Html.DisplayFor(model => model.EndTime.Time)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.NumberOfPeople)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NumberOfPeople)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Phone)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Phone)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Note)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Note)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Status)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Sitting)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Sitting.Date)
+        </dd>
+    </dl>
+</div>
+<a asp-action="Index" class="btn btn-secondary">View your reservations</a>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

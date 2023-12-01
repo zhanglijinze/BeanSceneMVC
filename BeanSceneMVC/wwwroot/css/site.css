@@ -67,6 +67,33 @@ color:black
 max-width:1800px;
 
 }
+
+p a {
+    color:white
+}
+
+.light-mode p a{
+color:black
+}
+
+td a {
+color:white
+}
+
+/*.light-mode td a {
+    color: black
+}
+*/
+dd a {
+
+color:white
+}
+
+.light-mode dd a {
+    color:black
+}
+
+
 /*
 
 --typography
@@ -266,4 +293,39 @@ width:fit-content
 
 table input[type="checkbox" i]:disabled {
     color: red;
+}
+
+
+
+/*
+    Status buttons
+*/
+.btn:is(.status-Pending, .status-Confirmed, .status-InProgress, .status-Completed, .status-Cancelled) {
+    border: 1px solid var(--color);
+    color: var(--color);
+}
+
+    .btn:is(.status-Pending, .status-Confirmed, .status-InProgress, .status-Completed, .status-Cancelled):is(:hover, :focus, .active) {
+        background-color: var(--color);
+        color: white;
+    }
+
+.status-Pending {
+    --color: #3cb4c3; /* Vibrant teal */
+}
+
+.status-Confirmed {
+    --color: #32cd32; /* Bright lime green */
+}
+
+.status-InProgress {
+    --color: #ff7f50; /* Bright coral */
+}
+
+.status-Completed {
+    --color: #00bfff; /* Deep sky blue */
+}
+
+.status-Cancelled {
+    --color: #ff1493; /* Deep pink */
 }

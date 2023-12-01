@@ -21,6 +21,8 @@ namespace BeanSceneMVC.Models
 
         [NotMapped]
         public bool IsManager { get => IsInRole("Manager").Result; }
+        [NotMapped]
+        public bool IsNoRole { get => IsInRole("NoRole").Result; }
 
         public async Task<bool> IsInRole(string roleName)
         {

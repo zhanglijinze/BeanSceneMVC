@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Create sitting";
+    string today = DateTime.Now.ToString("yyyy-MM-dd");
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -13,16 +14,18 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Sitting.Date" class="control-label"></label>
-                <input asp-for="Sitting.Date" class="form-control" />
+                <input asp-for="Sitting.Date" class="form-control" min="@today"/>
                 <span asp-validation-for="Sitting.Date" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Sitting.SittingTypeId" class="control-label"></label>
                 <select asp-for="Sitting.SittingTypeId" class ="form-control" asp-items="Model.SittingTypeList"></select>
+                <span asp-validation-for="Sitting.StartTimeId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Sitting.StartTimeId" class="control-label"></label>
                 <select asp-for="Sitting.StartTimeId" class ="form-control" asp-items="Model.TimeslotList"></select>
+                <span asp-validation-for="Sitting.EndTimeId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Sitting.EndTimeId" class="control-label"></label>

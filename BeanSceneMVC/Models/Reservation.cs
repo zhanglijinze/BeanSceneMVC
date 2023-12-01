@@ -110,5 +110,46 @@ namespace BeanSceneMVC.Models
         //Define a many-to-many relationship between reservation and table (check the table model)
         [DisplayName("Assigned Tables")]
         public List<Table> Tables { get; } = new();
+
+        /*
+ * Time validation
+ */
+        [NotMapped]
+        public int MinBookingLengthMinutes = 30;
+        [NotMapped]
+        public int MaxBookingLengthMinutes = 180;
+       
+
+        /// <summary>
+        ///     Check if sitting duration is valid (within the min/max booking lengths)
+        /// </summary>
+        /// <returns>True if duration is valid</returns>
+        public bool IsValidDuration()
+        {
+            // Check reservation duration (length = end time - start time)
+            TimeSpan timeSpan = EndTimeId - StartTimeId;
+            return timeSpan.TotalMinutes >= MinBookingLengthMinutes
+                && timeSpan.TotalMinutes <= MaxBookingLengthMinutes;
+        }
+        /// <summary>
+        ///     Check if start time is within the sitting
+        /// </summary>
+        /// <returns>True if start time is valid</returns>
+        public bool IsValidStartTime()
+        {
+            return StartTimeId >= Sitting.StartTimeId && StartTimeId <= Sitting.EndTimeId;
+        }
+        /// <summary>
+        ///     Check if end time is within the sitting
+        /// </summary>
+        /// <returns>True if end time is valid</returns>
+        public bool IsValidEndTime()
+        {
+            return EndTimeId >= Sitting.StartTimeId && EndTimeId <= Sitting.EndTimeId;
+        }
+        public bool IsValidCapacity()
+        { 
+        return NumberOfPeople<=Sitting.Capacity;
+        }
     }
 }

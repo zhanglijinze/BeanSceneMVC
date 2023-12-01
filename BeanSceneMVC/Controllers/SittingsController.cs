@@ -116,6 +116,13 @@ namespace BeanSceneMVC.Controllers
             {
                 ModelState.AddModelError("Sitting.Date", "Sitting already exists (same date and sitting type) ");
             }
+
+            if (!sitting.IsValidDuration())
+            {
+                ModelState.AddModelError("Sitting.EndTimeId", $"Start time must be less than end time and sitting must be {sitting.MinSittingLengthMinutes}-{sitting.MaxSittingLengthMinutes} minutes long.");
+            }
+
+
             // check if model is valid
 
             if (ModelState.IsValid)
@@ -226,7 +233,10 @@ namespace BeanSceneMVC.Controllers
             ModelState.Clear();
             TryValidateModel(sitting);
 
-
+            if (!sitting.IsValidDuration())
+            {
+                ModelState.AddModelError("Sitting.EndTimeId", $"Start time must be less than end time and sitting must be {sitting.MinSittingLengthMinutes}-{sitting.MaxSittingLengthMinutes} minutes long.");
+            }
 
 
 
@@ -330,6 +340,14 @@ namespace BeanSceneMVC.Controllers
             if (sitting == null)
             {
                 return NotFound("Sitting not found");
+            }
+            
+
+            var reservationGroup = 
+                _context.Reservations.Include(r =>r.Sitting).Where(s=> s.SittingTypeId== sittingTypeId && s.Date == sittingDate).ToList();
+            if(reservationGroup.Count > 0)
+            {
+                return NotFound("Sitting was linked to at least one reservation. Delete failed");
             }
             _context.Sittings.Remove(sitting);
             await _context.SaveChangesAsync();

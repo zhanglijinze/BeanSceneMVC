@@ -10,9 +10,12 @@ using BeanSceneMVC.Models;
 using System.Diagnostics.Eventing.Reader;
 using Microsoft.Identity.Client;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace BeanSceneMVC.Controllers
 {
+    [Authorize(Roles = "Staff,Manager")]
     public class MenuItemsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -25,6 +28,7 @@ namespace BeanSceneMVC.Controllers
         }
 
         // GET: MenuItems
+      
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.MenuItems.Include(m => m.MenuCategory);
@@ -32,6 +36,7 @@ namespace BeanSceneMVC.Controllers
         }
 
         // GET: MenuItems/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.MenuItems == null)
@@ -50,24 +55,7 @@ namespace BeanSceneMVC.Controllers
             return View(menuItem);
         }
 
-        // GET: MenuItems/Details/5
-        public async Task<IActionResult> DetailsCustomer(int? id)
-        {
-            if (id == null || _context.MenuItems == null)
-            {
-                return NotFound();
-            }
-
-            var menuItem = await _context.MenuItems
-                .Include(m => m.MenuCategory)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (menuItem == null)
-            {
-                return NotFound();
-            }
-
-            return View(menuItem);
-        }
+        
 
 
         // GET: MenuItems/Create
@@ -237,6 +225,7 @@ namespace BeanSceneMVC.Controllers
             Highest_Lowest,
         }
         // GET: MenuItems/ViewAll
+        [AllowAnonymous]
         public async Task<IActionResult> ViewAll(string?search, int? menuCategoryId,string?sort)
         {
             var sortPrice = Enum.GetValues(typeof(Sort)).Cast<Sort>();

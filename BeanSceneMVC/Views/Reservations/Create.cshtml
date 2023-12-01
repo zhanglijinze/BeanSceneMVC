@@ -1,4 +1,15 @@
 ﻿@model BeanSceneMVC.ViewModels.ReservationViewModel
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    //Get the currently logged-in user (and pass through the UserManager context)
+    ApplicationUser user = await UserManager.GetUserAsync(User) ?? new ApplicationUser();
+    user.UserManager = UserManager;
+    bool isReadOnly = !user.IsManager && !user.IsStaff;
+}
 
 @{
     ViewData["Title"] = "Create reservation";
@@ -36,10 +47,12 @@
             <div class="form-group">
                 <label asp-for="Reservation.StartTimeId" class="control-label"></label>
                 <select asp-for="Reservation.StartTimeId" class ="form-control" asp-items="Model.TimeslotList"></select>
+                        <span asp-validation-for="Reservation.StartTimeId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Reservation.EndTimeId" class="control-label"></label>
                 <select asp-for="Reservation.EndTimeId" class="form-control" asp-items="Model.TimeslotList"></select>
+                        <span asp-validation-for="Reservation.EndTimeId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Reservation.NumberOfPeople" class="control-label"></label>
@@ -82,8 +95,18 @@
             </div>*@
             <div class="form-group">
                 <label asp-for="Reservation.Source" class="control-label"></label>
-                <select asp-for="Reservation.Source" class="form-control" asp-items="Html.GetEnumSelectList<Reservation.SourceEnum>()"></select>
-                <span asp-validation-for="Reservation.Source" class="text-danger"></span>
+                        @if (isReadOnly)
+                        {
+                            <select asp-for="Reservation.Source" class="form-control" asp-items="Html.GetEnumSelectList<Reservation.SourceEnum>()" disabled></select>
+                            <span asp-validation-for="Reservation.Source" class="text-danger"></span>
+                        }
+                        else
+                        {
+                            <select asp-for="Reservation.Source" class="form-control" asp-items="Html.GetEnumSelectList<Reservation.SourceEnum>()"></select>
+                            <span asp-validation-for="Reservation.Source" class="text-danger"></span>
+                        }
+               @* <select asp-for="Reservation.Source" class="form-control" asp-items="Html.GetEnumSelectList<Reservation.SourceEnum>()"></select>
+                <span asp-validation-for="Reservation.Source" class="text-danger"></span>*@
             </div>
             </div>
 
