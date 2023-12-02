@@ -28,8 +28,9 @@ namespace BeanSceneMVC.Controllers
         }
 
         // GET: Reservations
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(DateTime? startDate, DateTime? endDate)
         {
+            //for pie chart
             var today = DateTime.Today;
             var twoWeeksLater = today.AddDays(14);
 
@@ -79,6 +80,31 @@ namespace BeanSceneMVC.Controllers
                     .Include(r => r.Sitting.SittingType)
                     .Include(r => r.User);
             }
+
+            //
+
+
+
+            if (startDate.HasValue)
+            {
+                reservations = reservations.Where(s => s.Date >= startDate.Value);
+            }
+
+            if (endDate.HasValue)
+            {
+                reservations = reservations.Where(s => s.Date <= endDate.Value);
+            }
+
+            if (!startDate.HasValue && !endDate.HasValue)
+            {
+              
+                var weekEnd = today.AddDays(14);
+
+                reservations = reservations.Where(s => s.Date >= today && s.Date < weekEnd);
+            }
+
+            //
+
             // Load the view
             return View(await reservations.ToListAsync());
         }
@@ -118,7 +144,7 @@ namespace BeanSceneMVC.Controllers
 
         // GET: Reservations/Create
         [AllowAnonymous]
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(DateTime? selectedDate)
         {
             /*    ViewData["EndTimeId"] = new SelectList(_context.Timeslots, "Time", "Time");
                 ViewData["Date"] = new SelectList(_context.Sittings, "Date", "Date");
@@ -126,7 +152,12 @@ namespace BeanSceneMVC.Controllers
                 ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");*/
             //Load view with the view model
             // View model
-            ReservationViewModel viewModel = GenerateDefaultViewModel();
+            ReservationViewModel viewModel = GenerateDefaultViewModel(null,selectedDate);
+
+
+
+
+
             // Get currently logged-in user
             ApplicationUser user = await GetLoggedInUserAsync();
             // Check if user is logged in and has the "User" role
@@ -605,7 +636,7 @@ namespace BeanSceneMVC.Controllers
         }
 
 
-        private ReservationViewModel GenerateDefaultViewModel(ReservationViewModel?viewModel=null)
+        private ReservationViewModel GenerateDefaultViewModel(ReservationViewModel?viewModel=null,DateTime?selectedDate=null)
         {
             //Check if no view model passed in
             if (viewModel == null)
@@ -621,9 +652,12 @@ namespace BeanSceneMVC.Controllers
             /* viewModel.SittingTypeList = new SelectList(_context.SittingTypes, "Id", "Name");*/
             viewModel.TimeslotList = new SelectList(_context.Timeslots.ToList(), "Time", "TimeFormatted");
 
-            viewModel.SittingList = new SelectList(
-                _context.Sittings.Where(s=>s.Date>=DateTime.Today&&s.Status==0)
-                .Select(s => new SelectListItem
+            //
+            if (selectedDate.HasValue)
+            {
+                var query = _context.Sittings.Where(s => s.Date == selectedDate && s.Status == 0);
+                viewModel.SittingList = new SelectList(
+                query.Select(s => new SelectListItem
                 {
                     //E.g. 2023-10-26:1
                     Value = s.Date.ToString("yyyy-MM-dd") + ":" +
@@ -636,6 +670,45 @@ namespace BeanSceneMVC.Controllers
                 "Value",
                 "Text"
                );
+                if (viewModel.SittingList.Count() == 0)
+                {
+                    viewModel.SittingList = new SelectList(new List<SelectListItem>
+{
+    new SelectListItem { Text = "Sitting not available on the selected day", Value = "Select a date" }
+}, "Value", "Text");
+                }
+
+            }
+            else 
+            
+            {
+                viewModel.SittingList = new SelectList(new List<SelectListItem>
+{
+    new SelectListItem { Text = "Select a date from above field", Value = "Select a date" }
+}, "Value", "Text");
+
+            }
+
+            
+
+            //
+
+
+            /* viewModel.SittingList = new SelectList(
+                _context.Sittings.Where(s => s.Date >= DateTime.Today && s.Status == 0)
+                .Select(s => new SelectListItem
+                {
+                    //E.g. 2023-10-26:1
+                    Value = s.Date.ToString("yyyy-MM-dd") + ":" +
+                s.SittingTypeId,
+                    //E.g. 26/10/2023 - Morning (09:00 AM-11:00 AM)
+                    Text = $"{s.Date.ToShortDateString()} - {s.SittingType.Name} ({s.StartTime.TimeFormatted}-{s.EndTime.TimeFormatted})"
+
+                })
+                .ToList(),
+                "Value",
+                "Text"
+               );*/
             // Get assigned and unassigned tables
             if (viewModel.Reservation.Id != 0)
             {

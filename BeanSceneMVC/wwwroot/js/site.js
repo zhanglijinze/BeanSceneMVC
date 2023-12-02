@@ -44,5 +44,20 @@ function toggleLightMode() {
     applyMode(isLightMode);
 })();
 
-//pie chart
+//date picker
 
+
+    $(function() {
+        $("#StartDatePicker").datepicker({
+            dateFormat: "yy-mm-dd" // Adjust date format as needed
+        });
+    $("#EndDatePicker").datepicker({
+        dateFormat: "yy-mm-dd" // Adjust date format as needed
+        });
+    });
+
+$(function () {
+    $("#SelectedDatePicker").datepicker({
+        dateFormat: "yy-mm-dd" // Adjust date format as needed
+    });
+});

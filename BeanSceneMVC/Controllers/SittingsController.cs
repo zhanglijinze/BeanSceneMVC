@@ -9,6 +9,7 @@ using BeanSceneMVC.Data;
 using BeanSceneMVC.Models;
 using BeanSceneMVC.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace BeanSceneMVC.Controllers
 {
@@ -24,10 +25,42 @@ namespace BeanSceneMVC.Controllers
 
         // GET: Sittings
         /*[AllowAnonymous] // Allow access by anyone like make reservation*/
-        public async Task<IActionResult> Index()
+
+     /*   public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Sittings.Include(s => s.EndTime).Include(s => s.SittingType).Include(s => s.StartTime);
             return View(await applicationDbContext.ToListAsync());
+        }*/
+
+        public async Task<IActionResult> Index(DateTime? startDate, DateTime? endDate)
+        {
+
+
+            var query = _context.Sittings.Include(s => s.EndTime).Include(s => s.SittingType).Include(s => s.StartTime).AsQueryable();
+
+
+            if (startDate.HasValue)
+            {
+                query = query.Where(s => s.Date >= startDate.Value);
+            }
+
+            if (endDate.HasValue)
+            {
+                query = query.Where(s => s.Date <= endDate.Value);
+            }
+
+            if (!startDate.HasValue && !endDate.HasValue)
+            {
+                var today = DateTime.Today;
+                var weekEnd = today.AddDays(7);
+
+                query = query.Where(s => s.Date >= today && s.Date < weekEnd);
+            }
+
+            var model = await query.ToListAsync();
+
+
+            return View(model);
         }
 
         // GET: Sittings/Details/5/yyyy-mm-dd
