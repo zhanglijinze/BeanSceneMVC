@@ -46,11 +46,11 @@ function toggleLightMode() {
 
 //pie chart
 window.onload = function () {
-
+    if (typeof globalPending !== 'undefined' && typeof globalChartData!='undefined') { 
     var chart = new CanvasJS.Chart("chartContainer", {
         animationEnabled: true,
         title: {
-            text: `${pending} reservations to confirm!               Reservation status for the next 14 days:`
+            text: `${globalPending} reservations to confirm!               Reservation status for the next 14 days:`
         },
         data: [{
             type: "pie",
@@ -61,5 +61,5 @@ window.onload = function () {
         }]
     });
     chart.render();
-
+    }
 }

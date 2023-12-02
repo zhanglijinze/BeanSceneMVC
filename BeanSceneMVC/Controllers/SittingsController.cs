@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace BeanSceneMVC.Controllers
 {
-    [Authorize(Roles ="Staff, Manager")]
+    [Authorize(Roles ="Manager")]
     public class SittingsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -23,7 +23,7 @@ namespace BeanSceneMVC.Controllers
         }
 
         // GET: Sittings
-        [AllowAnonymous] // Allow access by anyone like make reservation
+        /*[AllowAnonymous] // Allow access by anyone like make reservation*/
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Sittings.Include(s => s.EndTime).Include(s => s.SittingType).Include(s => s.StartTime);

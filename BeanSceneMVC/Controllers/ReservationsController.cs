@@ -12,6 +12,7 @@ using NuGet.Configuration;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using NuGet.Protocol;
 
 namespace BeanSceneMVC.Controllers
 {
@@ -90,9 +91,10 @@ namespace BeanSceneMVC.Controllers
             }
 
             var reservation = await _context.Reservations
+                .Include(r => r.StartTime)
                 .Include(r => r.EndTime)
                 .Include(r => r.Sitting)
-                .Include(r => r.StartTime)
+                .Include(r => r.Sitting.SittingType)
                 .Include(r => r.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (reservation == null)
@@ -183,7 +185,7 @@ namespace BeanSceneMVC.Controllers
             //Get model from the view model
             Reservation reservation = viewModel.Reservation;
 
-            // Attach session data to the reservation
+            // Attach sitting data to the reservation
             reservation.Sitting = sitting;
 
 
@@ -233,8 +235,8 @@ namespace BeanSceneMVC.Controllers
             {
                 ModelState.AddModelError("Reservation.EndTimeId", $"Booking must be {reservation.MinBookingLengthMinutes}-{reservation.MaxBookingLengthMinutes} minutes long.");
             }
-            if (!reservation.IsValidStartTime()) ModelState.AddModelError("Reservation.StartTimeId", "Must be within the session.");
-            if (!reservation.IsValidEndTime()) ModelState.AddModelError("Reservation.EndTimeId", "Must be within the session.");
+            if (!reservation.IsValidStartTime()) ModelState.AddModelError("Reservation.StartTimeId", "Must be within the sitting.");
+            if (!reservation.IsValidEndTime()) ModelState.AddModelError("Reservation.EndTimeId", "Must be within the sitting.");
 
             //validate capacity
 
@@ -308,70 +310,66 @@ namespace BeanSceneMVC.Controllers
         [Authorize(Roles = "Staff,Manager")]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Reservations == null)
-            {
-                return NotFound();
-            }
+            // Get reservation - 404 if not found
+            var reservation = await _context.Reservations
+                .Include(r => r.EndTime)
+                .Include(r => r.Tables)
+                .Include(r => r.Sitting)
+                .Include(r => r.Sitting.SittingType)
+                .Include(r => r.StartTime)
+                .Include(r => r.User)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (reservation == null) return NotFound();
 
-            var reservation = await _context.Reservations.FindAsync(id);
-            if (reservation == null)
-            {
-                return NotFound();
-            }
-            /*ViewData["EndTimeId"] = new SelectList(_context.Timeslots, "Time", "Time", reservation.EndTimeId);
-            ViewData["Date"] = new SelectList(_context.Sittings, "Date", "Date", reservation.Date);
-            ViewData["StartTimeId"] = new SelectList(_context.Timeslots, "Time", "Time", reservation.StartTimeId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", reservation.UserId);
-            return View(reservation);*/
-            // Build the view model
-            ReservationViewModel viewModel = GenerateDefaultViewModel();
+            // View model with default data (e.g. Timeslot list items)
+            ReservationViewModel viewModel = GenerateDefaultViewModel(reservation);
+            //viewModel.Reservation = reservation;
 
-            // Put reservation data into the view model
-            viewModel.Reservation = reservation;
-            viewModel.SittingId = $"{reservation.Date.ToString("yyyy-MM-dd")}:{reservation.SittingTypeId}";
-            // Load the view with our View Model
+            // Update the custom session ID
+            viewModel.SittingId = reservation.Sitting.Date.ToString("yyyy-MM-dd") + ":" + reservation.Sitting.SittingTypeId;
+
+            // Load View with ViewModel
             return View(viewModel);
-
         }
 
-  /*      // POST: Reservations/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,UserId,Date,SittingTypeId,StartTimeId,EndTimeId,NumberOfPeople,FirstName,LastName,Email,Phone,Note,Status,Source")] Reservation reservation)
-        {
-            if (id != reservation.Id)
-            {
-                return NotFound();
-            }
+        /*      // POST: Reservations/Edit/5
+              // To protect from overposting attacks, enable the specific properties you want to bind to.
+              // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+              [HttpPost]
+              [ValidateAntiForgeryToken]
+              public async Task<IActionResult> Edit(int id, [Bind("Id,UserId,Date,SittingTypeId,StartTimeId,EndTimeId,NumberOfPeople,FirstName,LastName,Email,Phone,Note,Status,Source")] Reservation reservation)
+              {
+                  if (id != reservation.Id)
+                  {
+                      return NotFound();
+                  }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(reservation);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ReservationExists(reservation.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["EndTimeId"] = new SelectList(_context.Timeslots, "Time", "Time", reservation.EndTimeId);
-            ViewData["Date"] = new SelectList(_context.Sittings, "Date", "Date", reservation.Date);
-            ViewData["StartTimeId"] = new SelectList(_context.Timeslots, "Time", "Time", reservation.StartTimeId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", reservation.UserId);
-            return View(reservation);
-        }*/
+                  if (ModelState.IsValid)
+                  {
+                      try
+                      {
+                          _context.Update(reservation);
+                          await _context.SaveChangesAsync();
+                      }
+                      catch (DbUpdateConcurrencyException)
+                      {
+                          if (!ReservationExists(reservation.Id))
+                          {
+                              return NotFound();
+                          }
+                          else
+                          {
+                              throw;
+                          }
+                      }
+                      return RedirectToAction(nameof(Index));
+                  }
+                  ViewData["EndTimeId"] = new SelectList(_context.Timeslots, "Time", "Time", reservation.EndTimeId);
+                  ViewData["Date"] = new SelectList(_context.Sittings, "Date", "Date", reservation.Date);
+                  ViewData["StartTimeId"] = new SelectList(_context.Timeslots, "Time", "Time", reservation.StartTimeId);
+                  ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", reservation.UserId);
+                  return View(reservation);
+              }*/
 
         // POST: Reservations/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -379,27 +377,18 @@ namespace BeanSceneMVC.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Staff,Manager")]
-        public async Task<IActionResult> Edit(int id, ReservationViewModel viewModelEdit)
+        public async Task<IActionResult> Edit(int id, ReservationViewModel viewModel)
         {
-            //Get model from the view model
-            Reservation reservation = viewModelEdit.Reservation;
-
-            if (id != reservation.Id)
-            {
-                return NotFound();
-            }
-
-            //Sitting ID regex pattern for validation (Data:Type, e.g 2023-11-28:1)
-
+            // Session ID regex pattern for validation (DATE:TYPE, e.g. 2023-11-03:1)
             Regex regexSittingId = new Regex(@"^(\d{4}-\d{2}-\d{2}):(\d)$");
 
-            // Match sitting ID against regex pattern
-            Match match = regexSittingId.Match(viewModelEdit.SittingId ?? "");
+            // Match session ID against regex pattern
+            Match match = regexSittingId.Match(viewModel.SittingId ?? "");
 
-            // Check if sitting ID is not valid
+            // Check if session ID is not valid
             if (!match.Success) return BadRequest("Invalid Sitting ID, should be in the format: 2023-11-03:1");
 
-            // Extract the sitting date and sitting type ID
+            // Extract the session date and session type ID
             string sittingDateString = match.Groups[1].Value;
             int sittingTypeId = int.Parse(match.Groups[2].Value);
 
@@ -413,45 +402,42 @@ namespace BeanSceneMVC.Controllers
 
             // Check Sitting exists
             var sitting = await _context.Sittings
-                .Include(s => s.SittingType)
                 .Include(s => s.StartTime)
                 .Include(s => s.EndTime)
                 .FirstOrDefaultAsync(s => s.SittingTypeId == sittingTypeId && s.Date == sittingDate);
             if (sitting == null) return NotFound("Sitting not found.");
 
+            // Get model from the view model
+            Reservation reservation = viewModel.Reservation;
 
             // Attach session data to the reservation
             reservation.Sitting = sitting;
 
-
-
-
-            //Find related entities based on their foreign key values (IDs)
-
+            // Find related entities based on their foreign key values (IDs)
 
             Timeslot? startTime = await _context.Timeslots.FindAsync(reservation.StartTimeId);
-
             Timeslot? endTime = await _context.Timeslots.FindAsync(reservation.EndTimeId);
 
-            //Check if related entities don't exist - throw 404 or a nice error message...
-
-
+            // Check if related entities don't exist - throw 404 or a nice error message...
+          
             if (startTime == null) return NotFound("Start timeslot not found");
             if (endTime == null) return NotFound("End timeslot not found");
 
-            //Assign related entities to the model
-
+            // Assign related entities to the model
+          
             reservation.StartTime = startTime;
             reservation.EndTime = endTime;
 
-
-            //Manually revalidate the model
+            // Manually revalidate the model
             ModelState.Clear();
             TryValidateModel(reservation);
 
 
-            //validate start & end times
+            /*
+             * Validate start & end times (use custom ModelState validation)
+             */
 
+            // Validate start & end times
             if (!reservation.IsValidDuration())
             {
                 ModelState.AddModelError("Reservation.EndTimeId", $"Booking must be {reservation.MinBookingLengthMinutes}-{reservation.MaxBookingLengthMinutes} minutes long.");
@@ -460,6 +446,7 @@ namespace BeanSceneMVC.Controllers
             if (!reservation.IsValidEndTime()) ModelState.AddModelError("Reservation.EndTimeId", "Must be within the session.");
 
 
+            // Check model is valid
             if (ModelState.IsValid)
             {
                 try
@@ -480,16 +467,14 @@ namespace BeanSceneMVC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            /* ViewData["EndTimeId"] = new SelectList(_context.Timeslots, "Time", "Time", reservation.EndTimeId);
-             ViewData["Date"] = new SelectList(_context.Sittings, "Date", "Date", reservation.Date);
-             ViewData["StartTimeId"] = new SelectList(_context.Timeslots, "Time", "Time", reservation.StartTimeId);
-             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", reservation.UserId);
-             return View(reservation);*/
-            ReservationViewModel viewModel = GenerateDefaultViewModel();
 
-            //Put session data into the view model
+            // Build the view model
+            viewModel = GenerateDefaultViewModel(viewModel);
+
+            // Put data into the view model
             viewModel.Reservation = reservation;
-            //Load the view with our View Model
+
+            // Load the view with our View Model
             return View(viewModel);
         }
 
@@ -506,6 +491,7 @@ namespace BeanSceneMVC.Controllers
             var reservation = await _context.Reservations
                 .Include(r => r.EndTime)
                 .Include(r => r.Sitting)
+                .ThenInclude(r=>r.SittingType)
                 .Include(r => r.StartTime)
                 .Include(r => r.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -558,10 +544,66 @@ namespace BeanSceneMVC.Controllers
             return RedirectToAction(nameof(Details), new { id = reservation.Id });
         }
 
+
+        // POST: Reservations/AssignTable
+        [HttpPost]
+        [Authorize(Roles = "Staff,Manager")]
+        public async Task<IActionResult> AssignTable(int reservationId, string tableCode)
+        {
+            // Check if data not supplied
+            if (reservationId == null || tableCode == null) return BadRequest("Must provide reservation ID and table code.");
+            // Get reservation
+            var reservation = await _context.Reservations.FindAsync(reservationId);
+            if (reservation == null) return NotFound("Reservation not found.");
+            // Get table
+            var table = await _context.Tables.FindAsync(tableCode);
+            if (table == null) return NotFound("Table not found.");
+            // Add table to the reservation
+            reservation.Tables.Add(table);
+            // Update the database
+            _context.Update(reservation);
+            await _context.SaveChangesAsync();
+            // Redirect to Edit view
+            return RedirectToAction(nameof(Edit), new { id = reservation.Id });
+        }
+        // POST: Reservations/UnassignTable
+        [HttpPost]
+        [Authorize(Roles = "Staff,Manager")]
+        public async Task<IActionResult> UnassignTable(int reservationId, string tableCode)
+        {
+            // Check if data not supplied
+            if (reservationId == null || tableCode == null) return BadRequest("Must provide reservation ID and table code.");
+            // Get reservation
+            var reservation = await _context.Reservations
+                .Include(r => r.Tables)
+                .FirstOrDefaultAsync(r => r.Id == reservationId);
+            if (reservation == null) return NotFound("Reservation not found.");
+            // Get table
+            var table = await _context.Tables.FindAsync(tableCode);
+            if (table == null) return NotFound("Table not found.");
+            // Remove table from the reservation
+            reservation.Tables.Remove(table);
+            // Update the database
+            _context.Update(reservation);
+            await _context.SaveChangesAsync();
+            // Redirect to Edit view
+            return RedirectToAction(nameof(Edit), new { id = reservation.Id });
+        }
+
         private bool ReservationExists(int id)
         {
           return (_context.Reservations?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+
+        private ReservationViewModel GenerateDefaultViewModel(Reservation reservation)
+        {
+            // Make a new view model and assign the reservation
+            ReservationViewModel viewModel = new ReservationViewModel();
+            viewModel.Reservation = reservation;
+            // Call the main GenerateDefaultViewModel() method
+            return GenerateDefaultViewModel(viewModel);
+        }
+
 
         private ReservationViewModel GenerateDefaultViewModel(ReservationViewModel?viewModel=null)
         {
@@ -594,7 +636,44 @@ namespace BeanSceneMVC.Controllers
                 "Value",
                 "Text"
                );
-     
+            // Get assigned and unassigned tables
+            if (viewModel.Reservation.Id != 0)
+            {
+                // Find ALL table codes that have been assigned for THIS reservation's sitting
+                List<string> unavailableTableCodes = _context.Reservations
+                    .Include("Tables")
+                    .Where(res =>
+
+                        // Check if reservations are in the same sitting
+                        res.Date == viewModel.Reservation.Date
+                        && res.SittingTypeId == viewModel.Reservation.SittingTypeId
+                        // Check if reservation times overlap
+                        && !(
+                            res.EndTimeId <= viewModel.Reservation.StartTimeId
+                            || res.StartTimeId >= viewModel.Reservation.EndTimeId
+                        )
+                    )
+                    .SelectMany(
+                        // Collection selector (find Tables with the Reservation)
+                        res => res.Tables
+                        ,
+                        // Result selector (find Code from each Table)
+                        (res, table) => table.Code
+                    )
+                    .ToList();
+                // Unassigned tables
+                viewModel.UnassignedTablesList = new SelectList(
+                    _context.Tables
+                        .Where(r =>
+                            !unavailableTableCodes.Contains(r.Code)
+                        )
+                        .Select(r => r.Code)
+                        .ToList()
+                );
+                // Assigned tables
+                viewModel.AssignedTablesList = new SelectList(viewModel.Reservation.Tables.Select(r => r.Code));
+            }
+
             return viewModel;
         }
 

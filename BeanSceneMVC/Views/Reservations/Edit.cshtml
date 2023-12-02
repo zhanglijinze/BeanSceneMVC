@@ -1,83 +1,76 @@
 ﻿@model BeanSceneMVC.ViewModels.ReservationViewModel
-@using Microsoft.AspNetCore.Identity
-
-@inject SignInManager<ApplicationUser> SignInManager
-@inject UserManager<ApplicationUser> UserManager
-
-@{
-    //Get the currently logged-in user (and pass through the UserManager context)
-    ApplicationUser user = await UserManager.GetUserAsync(User) ?? new ApplicationUser();
-    user.UserManager = UserManager;
-    bool isReadOnly = !user.IsManager && !user.IsStaff;
-}
-
-
 
 @{
     ViewData["Title"] = "Edit reservation";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string sessionText = $"{Model.Reservation.Date.ToShortDateString()} - {Model.Reservation.Sitting.SittingType.Name} ({Model.Reservation.Sitting.StartTime.TimeFormatted}-{Model.Reservation.Sitting.EndTime.TimeFormatted})";
 }
 
-<h1>@ViewData["Title"]</h1>
 
+<h1>Edit reservation</h1>
 
 <hr />
+
 <div class="row">
-    <div class="">
+    <div class="col-md-6">
         <form asp-action="Edit" class="d-flex flex-column gap-2">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div asp-validation-summary="All" class="text-danger"></div>
+
             <input type="hidden" asp-for="Reservation.Id" />
-           @* <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
-                <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId"></select>
-                <span asp-validation-for="UserId" class="text-danger"></span>
-            </div>*@
-            <div class="row">
-                <div class="col-12 col-md-6">
+            <input type="hidden" asp-for="Reservation.UserId" />
+            <input type="hidden" asp-for="Reservation.Date" />
+            <input type="hidden" asp-for="Reservation.SittingTypeId" />
+            <input type="hidden" asp-for="SittingId" />
 
+            @* Sitting is disabled as it should not change *@
             <div class="form-group">
-                <label asp-for="Reservation.Sitting" class="control-label"></label>
-                <select asp-for="SittingId" class="form-control" asp-items="Model.SittingList"></select>
-               @* <span asp-validation-for="Date" class="text-danger"></span>*@
+                <label class="control-label">Sitting</label>
+                @*<select asp-for="SittingId" class="form-control" asp-items="Model.SittingList"></select>*@
+                <input class="form-control" disabled value="@sessionText" />
             </div>
 
-           @* <div class="form-group">
-                <label asp-for="Date" class="control-label"></label>
-                <select asp-for="Date" class="form-control" asp-items="ViewBag.Date"></select>
-                <span asp-validation-for="Date" class="text-danger"></span>
+            <div class="form-group d-flex gap-2">
+                <div class="flex-grow-1">
+                    <label asp-for="Reservation.StartTimeId" class="control-label"></label>
+                    <select asp-for="Reservation.StartTimeId" class="form-control" asp-items="Model.TimeslotList"></select>
+                    <span asp-validation-for="Reservation.StartTimeId" class="text-danger"></span>
+                </div>
+                <div class="flex-grow-1">
+                    <label asp-for="Reservation.EndTimeId" class="control-label"></label>
+                    <select asp-for="Reservation.EndTimeId" class="form-control" asp-items="Model.TimeslotList"></select>
+                    <span asp-validation-for="Reservation.EndTimeId" class="text-danger"></span>
+                </div>
             </div>
+
+            <div class="form-group d-flex gap-2">
+              
+                <div class="flex-grow-0">
+                    <label asp-for="Reservation.NumberOfPeople" class="control-label"></label>
+                    <input asp-for="Reservation.NumberOfPeople" class="form-control" />
+                    <span asp-validation-for="Reservation.NumberOfPeople" class="text-danger"></span>
+                </div>
+            </div>
+
             <div class="form-group">
-                <label asp-for="SittingTypeId" class="control-label"></label>
-                <select asp-for="SittingTypeId" class="form-control" asp-items="ViewBag.SittingTypeId"></select>
-                <span asp-validation-for="SittingTypeId" class="text-danger"></span>
-            </div>*@
-            <div class="form-group">
-                <label asp-for="Reservation.StartTimeId" class="control-label"></label>
-                <select asp-for="Reservation.StartTimeId" class="form-control" asp-items="Model.TimeslotList"></select>
-                <span asp-validation-for="Reservation.StartTimeId" class="text-danger"></span>
+                <label asp-for="Reservation.Status" class="control-label"></label>
+                <select asp-for="Reservation.Status" class="form-control" asp-items="@Html.GetEnumSelectList<Reservation.StatusEnum>()"></select>
+                <span asp-validation-for="Reservation.Status" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Reservation.EndTimeId" class="control-label"></label>
-                <select asp-for="Reservation.EndTimeId" class="form-control" asp-items="Model.TimeslotList"></select>
-                <span asp-validation-for="Reservation.EndTimeId" class="text-danger"></span>
+
+            <div class="form-group d-flex gap-2">
+                <div class="flex-grow-1">
+                    <label asp-for="Reservation.FirstName" class="control-label"></label>
+                    <input asp-for="Reservation.FirstName" class="form-control" />
+                    <span asp-validation-for="Reservation.FirstName" class="text-danger"></span>
+                </div>
+                <div class="flex-grow-1">
+                    <label asp-for="Reservation.LastName" class="control-label"></label>
+                    <input asp-for="Reservation.LastName" class="form-control" />
+                    <span asp-validation-for="Reservation.LastName" class="text-danger"></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Reservation.NumberOfPeople" class="control-label"></label>
-                <input asp-for="Reservation.NumberOfPeople" class="form-control" />
-                <span asp-validation-for="Reservation.NumberOfPeople" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Reservation.FirstName" class="control-label"></label>
-                <input asp-for="Reservation.FirstName" class="form-control" />
-                <span asp-validation-for="Reservation.FirstName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Reservation.LastName" class="control-label"></label>
-                <input asp-for="Reservation.LastName" class="form-control" />
-                <span asp-validation-for="Reservation.LastName" class="text-danger"></span>
-            </div>
-            </div>
-                    <div class="col-12 col-md-6">
             <div class="form-group">
                 <label asp-for="Reservation.Email" class="control-label"></label>
                 <input asp-for="Reservation.Email" class="form-control" />
@@ -90,67 +83,49 @@
             </div>
             <div class="form-group">
                 <label asp-for="Reservation.Note" class="control-label"></label>
-                <input asp-for="Reservation.Note" class="form-control" />
+                <textarea asp-for="Reservation.Note" class="form-control"></textarea>
                 <span asp-validation-for="Reservation.Note" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Reservation.Status" class="control-label"></label>
-                <select asp-for="Reservation.Status" class="form-control" asp-items="Html.GetEnumSelectList<Reservation.StatusEnum>()"></select>
-                <span asp-validation-for="Reservation.Status" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Reservation.Source" class="control-label"></label>
-                        @if (isReadOnly) 
-                        { 
-                        <select asp-for="Reservation.Source" class="form-control" asp-items="Html.GetEnumSelectList<Reservation.SourceEnum>()" disabled></select>
-                            <span asp-validation-for="Reservation.Source" class="text-danger"></span>
-                        }else
-                        {
-     <select asp-for="Reservation.Source" class="form-control" asp-items="Html.GetEnumSelectList<Reservation.SourceEnum>()"></select>
-                                <span asp-validation-for="Reservation.Source" class="text-danger"></span>
-                        }
-                    </div>
-                  
-                </div>
-            </div>
+
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
-                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-            </div>
-            <div>
-                <h2>Tables assigned</h2>
-                <div class="row">
-                    <form asp-action="AssignTable" class="col-md-6 d-flex flex-column gap-2">
-                        <input type="hidden" name="reservationId" value="@Model.Reservation.Id" />
-                        <div class="form-group">
-                            <label for="assignTableCode" class="control-label">Available tables</label>
-                            <select id="assignTableCode" name="roomCode" class="form-control" multiple asp-items="Model.UnassignedTablesList"></select>
-                            @*<span asp-validation-for="Reservation.Status" class="text-danger"></span>*@
-                        </div>
-                        <div class="form-group">
-                            <input type="submit" value="Assign" class="btn btn-primary" />
-                        </div>
-                    </form>
-                    <form asp-action="UnassignTable" class="col-md-6 d-flex flex-column gap-2">
-                        <input type="hidden" name="reservationId" value="@Model.Reservation.Id" />
-                        <div class="form-group">
-                            <label for="unassignTableCode" class="control-label">Assigned tables</label>
-                            <select id="unassignTableCode" name="roomCode" class="form-control" multiple asp-items="Model.AssignedTablesList"></select>
-                            @*<span asp-validation-for="Reservation.Status" class="text-danger"></span>*@
-                        </div>
-                        <div class="form-group">
-                            <input type="submit" value="Unassign" class="btn btn-primary" />
-                        </div>
-                    </form>
-                </div>
-
-
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
             </div>
         </form>
     </div>
-    
+    <div class="col-md-6">
 
+        <h2>Rooms assigned</h2>
+
+        <div class="row">
+            <form asp-action="AssignTable" class="col-md-6 d-flex flex-column gap-2">
+                <input type="hidden" name="reservationId" value="@Model.Reservation.Id" />
+
+                <div class="form-group">
+                    <label for="assignTableCode" class="control-label">Available tables</label>
+                    <select id="assignTableCode" name="tableCode" class="form-control" multiple asp-items="Model.UnassignedTablesList"></select>
+                    @*<span asp-validation-for="Reservation.Status" class="text-danger"></span>*@
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Assign" class="btn btn-primary" />
+                </div>
+            </form>
+            <form asp-action="UnassignTable" class="col-md-6 d-flex flex-column gap-2">
+                <input type="hidden" name="reservationId" value="@Model.Reservation.Id" />
+
+                <div class="form-group">
+                    <label for="unassignTableCode" class="control-label">Assigned rooms</label>
+                    <select id="unassignTableCode" name="tableCode" class="form-control" multiple asp-items="Model.AssignedTablesList"></select>
+                    @*<span asp-validation-for="Reservation.Status" class="text-danger"></span>*@
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Unassign" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
+
 
 
 
