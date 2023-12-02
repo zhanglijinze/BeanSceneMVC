@@ -6,8 +6,7 @@
     @inject UserManager<ApplicationUser> UserManager
 
 @{
-    var chartData = ViewBag.ChartData;
-    var pending = ViewBag.ChartDataPending;
+    
     //Get the currently logged-in user (and pass through the UserManager context)
         ApplicationUser user = await UserManager.GetUserAsync(User) ?? new ApplicationUser();
         user.UserManager = UserManager;
@@ -153,8 +152,26 @@
         
     </tbody>
 </table>
+<script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
 <script>
-    var globalChartData = @Html.Raw(chartData);
-    var globalPending = @Html.Raw(pending);
+    window.onload = function () {
+        var chartData = @Html.Raw(ViewBag.ChartData ?? "[]");
+        var pending = @Html.Raw(ViewBag.ChartDataPending ?? "0");
+            var chart = new CanvasJS.Chart("chartContainer", {
+                animationEnabled: true,
+                title: {
+                    text: `${pending} reservations to confirm for the next 14 days!               Reservation status for the next 14 days:`
+                },
+                data: [{
+                    type: "pie",
+                    startAngle: 240,
+                    yValueFormatString: "##0.00\"%\"",
+                    indexLabel: "{label} {y}",
+                    dataPoints: chartData
+                }]
+            });
+            chart.render();
+        }
+  
 
 </script>

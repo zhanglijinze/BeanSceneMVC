@@ -45,21 +45,4 @@ function toggleLightMode() {
 })();
 
 //pie chart
-window.onload = function () {
-    if (typeof globalPending !== 'undefined' && typeof globalChartData!='undefined') { 
-    var chart = new CanvasJS.Chart("chartContainer", {
-        animationEnabled: true,
-        title: {
-            text: `${globalPending} reservations to confirm!               Reservation status for the next 14 days:`
-        },
-        data: [{
-            type: "pie",
-            startAngle: 240,
-            yValueFormatString: "##0.00\"%\"",
-            indexLabel: "{label} {y}",
-            dataPoints:globalChartData
-        }]
-    });
-    chart.render();
-    }
-}
+
