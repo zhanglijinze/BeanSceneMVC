@@ -142,11 +142,11 @@
 
 <script>
     $(function () {
-        var availableDates = @Html.Raw(jsonAvailableDates);
+        var availableDate = @Html.Raw(jsonAvailableDates);
         console.log("jQuery is working");
         function available(date) {
             var formattedDate = $.datepicker.formatDate('yy-mm-dd', date);
-            return [availableDates.includes(formattedDate)];
+            return [availableDate.includes(formattedDate)];
         }
 
         $("#datepicker").datepicker({

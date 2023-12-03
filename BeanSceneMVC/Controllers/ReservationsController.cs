@@ -156,7 +156,7 @@ namespace BeanSceneMVC.Controllers
             ReservationViewModel model = GenerateDefaultViewModel();
 
             model.AvailableDates = _context.Sittings
-                                      .Where(s => s.Status == Sitting.StatusEnum.Available && s.Date >= DateTime.Now)
+                                      .Where(s => s.Status == Sitting.StatusEnum.Available && s.Date >= DateTime.Today)
                                       .Select(s => s.Date).Distinct().ToList();
 
 
@@ -192,6 +192,10 @@ namespace BeanSceneMVC.Controllers
         /*  public async Task<IActionResult> Create([Bind("Id,UserId,Date,SittingTypeId,StartTimeId,EndTimeId,NumberOfPeople,FirstName,LastName,Email,Phone,Note,Status,Source")] Reservation reservation)*/
         public async Task<IActionResult> Create(ReservationViewModel viewModel)
         {
+            viewModel.AvailableDates = _context.Sittings
+                                      .Where(s => s.Status == Sitting.StatusEnum.Available && s.Date >= DateTime.Now)
+                                      .Select(s => s.Date).Distinct().ToList();
+
             //Sitting ID regex pattern for validation (Data:Type, e.g 2023-11-28:1)
 
             Regex regexSittingId = new Regex(@"^(\d{4}-\d{2}-\d{2}):(\d)$");

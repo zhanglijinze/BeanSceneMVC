@@ -137,7 +137,7 @@ namespace BeanSceneMVC.Models
         /// <returns>True if start time is valid</returns>
         public bool IsValidStartTime()
         {
-            return StartTimeId >= Sitting.StartTimeId && StartTimeId <= Sitting.EndTimeId;
+            return StartTimeId >= Sitting.StartTimeId && StartTimeId < Sitting.EndTimeId;
         }
         /// <summary>
         ///     Check if end time is within the sitting
@@ -145,7 +145,7 @@ namespace BeanSceneMVC.Models
         /// <returns>True if end time is valid</returns>
         public bool IsValidEndTime()
         {
-            return EndTimeId >= Sitting.StartTimeId && EndTimeId <= Sitting.EndTimeId;
+            return EndTimeId > Sitting.StartTimeId && EndTimeId <= Sitting.EndTimeId;
         }
         public bool IsValidCapacity()
         { 
