@@ -52,7 +52,7 @@ namespace BeanSceneMVC.Controllers
             if (!startDate.HasValue && !endDate.HasValue)
             {
                 var today = DateTime.Today;
-                var weekEnd = today.AddDays(7);
+                var weekEnd = today.AddDays(14);
 
                 query = query.Where(s => s.Date >= today && s.Date < weekEnd);
             }

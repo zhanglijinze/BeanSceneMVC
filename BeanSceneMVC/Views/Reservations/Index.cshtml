@@ -177,6 +177,7 @@
 <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
 <script>
     window.onload = function () {
+        if ($("#chartContainer").length) {
         var chartData = @Html.Raw(ViewBag.ChartData ?? "[]");
         var pending = @Html.Raw(ViewBag.ChartDataPending ?? "0");
             var chart = new CanvasJS.Chart("chartContainer", {
@@ -194,6 +195,6 @@
             });
             chart.render();
         }
-  
+    }
 
 </script>

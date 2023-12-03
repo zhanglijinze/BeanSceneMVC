@@ -47,14 +47,48 @@ function toggleLightMode() {
 //date picker
 
 
-    $(function() {
+   /* $(function() {
         $("#StartDatePicker").datepicker({
-            dateFormat: "yy-mm-dd" // Adjust date format as needed
+            dateFormat: "yy-mm-dd", // Adjust date format as needed
         });
     $("#EndDatePicker").datepicker({
         dateFormat: "yy-mm-dd" // Adjust date format as needed
         });
+    });*/
+
+$(function () {
+    $("#StartDatePicker").datepicker({
+        dateFormat: "yy-mm-dd", // Adjust date format as needed
+        onClose: function (selectedDate) {
+            // Set the minDate or maxDate for the EndDatePicker
+            var maxEndDate = new Date(Date.parse(selectedDate));
+            maxEndDate.setDate(maxEndDate.getDate() + 14); // Add 14 days
+            $("#EndDatePicker").datepicker("option", "minDate", selectedDate);
+            $("#EndDatePicker").datepicker("option", "maxDate", maxEndDate);
+
+            // If only start date is selected, set end date to 14 days later
+            if ($("#EndDatePicker").val() === '') {
+                $("#EndDatePicker").datepicker("setDate", maxEndDate);
+            }
+        }
     });
+
+    $("#EndDatePicker").datepicker({
+        dateFormat: "yy-mm-dd", // Adjust date format as needed
+        onClose: function (selectedDate) {
+            // Set the maxDate for the StartDatePicker
+            var minStartDate = new Date(Date.parse(selectedDate));
+            minStartDate.setDate(minStartDate.getDate() - 14); // Subtract 14 days
+            $("#StartDatePicker").datepicker("option", "maxDate", selectedDate);
+            $("#StartDatePicker").datepicker("option", "minDate", minStartDate);
+
+            // If only end date is selected, set start date to 14 days earlier
+            if ($("#StartDatePicker").val() === '') {
+                $("#StartDatePicker").datepicker("setDate", minStartDate);
+            }
+        }
+    });
+});
 
 $(function () {
     $("#SelectedDatePicker").datepicker({

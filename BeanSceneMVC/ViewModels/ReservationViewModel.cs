@@ -20,5 +20,6 @@ namespace BeanSceneMVC.ViewModels
         public SelectList AssignedTablesList { get; set; } = null!;
         public SelectList UnassignedTablesList { get; set; } = null!;
 
+        public List<DateTime> AvailableDates { get; set; } = null!;
     }
 }

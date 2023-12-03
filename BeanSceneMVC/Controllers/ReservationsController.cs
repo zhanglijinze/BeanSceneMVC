@@ -152,11 +152,21 @@ namespace BeanSceneMVC.Controllers
                 ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");*/
             //Load view with the view model
             // View model
-            ReservationViewModel viewModel = GenerateDefaultViewModel(null,selectedDate);
+
+            ReservationViewModel model = GenerateDefaultViewModel();
+
+            model.AvailableDates = _context.Sittings
+                                      .Where(s => s.Status == Sitting.StatusEnum.Available && s.Date >= DateTime.Now)
+                                      .Select(s => s.Date).Distinct().ToList();
+
+
+            ReservationViewModel viewModel = GenerateDefaultViewModel(model,selectedDate);
 
 
 
-
+            /*viewModel.AvailableDates = _context.Sittings
+                                      .Where(s => s.Status == Sitting.StatusEnum.Available&&s.Date>=DateTime.Now)
+                                      .Select(s => s.Date).Distinct().ToList();*/
 
             // Get currently logged-in user
             ApplicationUser user = await GetLoggedInUserAsync();
@@ -638,6 +648,7 @@ namespace BeanSceneMVC.Controllers
 
         private ReservationViewModel GenerateDefaultViewModel(ReservationViewModel?viewModel=null,DateTime?selectedDate=null)
         {
+
             //Check if no view model passed in
             if (viewModel == null)
             {
@@ -651,6 +662,7 @@ namespace BeanSceneMVC.Controllers
             //Populate the selest list items
             /* viewModel.SittingTypeList = new SelectList(_context.SittingTypes, "Id", "Name");*/
             viewModel.TimeslotList = new SelectList(_context.Timeslots.ToList(), "Time", "TimeFormatted");
+            
 
             //
             if (selectedDate.HasValue)
@@ -670,6 +682,8 @@ namespace BeanSceneMVC.Controllers
                 "Value",
                 "Text"
                );
+                
+
                 if (viewModel.SittingList.Count() == 0)
                 {
                     viewModel.SittingList = new SelectList(new List<SelectListItem>
@@ -747,6 +761,7 @@ namespace BeanSceneMVC.Controllers
                 viewModel.AssignedTablesList = new SelectList(viewModel.Reservation.Tables.Select(r => r.Code));
             }
 
+           
             return viewModel;
         }
 
