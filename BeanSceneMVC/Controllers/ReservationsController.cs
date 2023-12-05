@@ -153,14 +153,12 @@ namespace BeanSceneMVC.Controllers
             //Load view with the view model
             // View model
 
-            ReservationViewModel model = GenerateDefaultViewModel();
+           
 
-            model.AvailableDates = _context.Sittings
-                                      .Where(s => s.Status == Sitting.StatusEnum.Available && s.Date >= DateTime.Today)
-                                      .Select(s => s.Date).Distinct().ToList();
+          
 
 
-            ReservationViewModel viewModel = GenerateDefaultViewModel(model,selectedDate);
+            ReservationViewModel viewModel = GenerateDefaultViewModel(null,selectedDate);
 
 
 
@@ -192,9 +190,7 @@ namespace BeanSceneMVC.Controllers
         /*  public async Task<IActionResult> Create([Bind("Id,UserId,Date,SittingTypeId,StartTimeId,EndTimeId,NumberOfPeople,FirstName,LastName,Email,Phone,Note,Status,Source")] Reservation reservation)*/
         public async Task<IActionResult> Create(ReservationViewModel viewModel)
         {
-            viewModel.AvailableDates = _context.Sittings
-                                      .Where(s => s.Status == Sitting.StatusEnum.Available && s.Date >= DateTime.Now)
-                                      .Select(s => s.Date).Distinct().ToList();
+            
 
             //Sitting ID regex pattern for validation (Data:Type, e.g 2023-11-28:1)
 
@@ -653,6 +649,8 @@ namespace BeanSceneMVC.Controllers
         private ReservationViewModel GenerateDefaultViewModel(ReservationViewModel?viewModel=null,DateTime?selectedDate=null)
         {
 
+          
+
             //Check if no view model passed in
             if (viewModel == null)
             {
@@ -663,6 +661,9 @@ namespace BeanSceneMVC.Controllers
                 viewModel.Reservation = new Reservation();
             }
 
+            viewModel.AvailableDates = _context.Sittings
+                                    .Where(s => s.Status == Sitting.StatusEnum.Available && s.Date >= DateTime.Now)
+                                    .Select(s => s.Date).Distinct().ToList();
             //Populate the selest list items
             /* viewModel.SittingTypeList = new SelectList(_context.SittingTypes, "Id", "Name");*/
             viewModel.TimeslotList = new SelectList(_context.Timeslots.ToList(), "Time", "TimeFormatted");
