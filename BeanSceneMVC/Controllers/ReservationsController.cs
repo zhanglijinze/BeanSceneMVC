@@ -323,7 +323,7 @@ namespace BeanSceneMVC.Controllers
              ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", reservation.UserId);*/
 
             //Build the view model (viewModel as the parameter will take the viewModel that has the reservation and pass it in here and method would not create a new viewModel with reservation but populate with dropdown list. )
-             viewModel = GenerateDefaultViewModel(viewModel);
+             viewModel = GenerateDefaultViewModel(viewModel,sittingDate);
 
             //Put sitting data into the view model
             viewModel.Reservation = reservation;
