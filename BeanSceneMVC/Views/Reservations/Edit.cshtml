@@ -95,7 +95,7 @@
     </div>
     <div class="col-md-6">
 
-        <h2>Rooms assigned</h2>
+        <h2>Tables assigned</h2>
 
         <div class="row">
             <form asp-action="AssignTable" class="col-md-6 d-flex flex-column gap-2">
@@ -114,7 +114,7 @@
                 <input type="hidden" name="reservationId" value="@Model.Reservation.Id" />
 
                 <div class="form-group">
-                    <label for="unassignTableCode" class="control-label">Assigned rooms</label>
+                    <label for="unassignTableCode" class="control-label">Assigned tables</label>
                     <select id="unassignTableCode" name="tableCode" class="form-control" multiple asp-items="Model.AssignedTablesList"></select>
                     @*<span asp-validation-for="Reservation.Status" class="text-danger"></span>*@
                 </div>
